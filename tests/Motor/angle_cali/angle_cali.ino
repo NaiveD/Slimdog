@@ -59,15 +59,15 @@ void setup() {
   int angle = 90;
 //  
 //  pwm.setPWM(0, 0, angletoPWM(angle, 0));
-//  pwm.setPWM(1, 0, angletoPWM(angle, 1));
+//  pwm.setPWM(1, 0, 300);
 //  pwm.setPWM(2, 0, angletoPWM(angle, 2));
 //
-//  pwm.setPWM(4, 0, angletoPWM(angle, 4));
-//  pwm.setPWM(5, 0, angletoPWM(angle, 5));
-//  pwm.setPWM(6, 0, angletoPWM(angle, 6));
+//  pwm.setPWM(4, 0, 580); // 220 top , 400 horizontal (90), 310 (60), 580 bottom     220 - 400 - 580(tallest)
+//  pwm.setPWM(5, 0, 330); // 330 vertical to the ground, 400 out30, 190 in45           110 - 330 - 470(outermost / rightmost)
+//  pwm.setPWM(6, 0, 345); // 345 verticle to the ground, 220 (45 to the back), 480 (45 to the front)   110 - 345 - ~590 (frontmost)
 //
 //  pwm.setPWM(8, 0, angletoPWM(angle, 8));
-  pwm.setPWM(9, 0, 405);
+//  pwm.setPWM(9, 0, 405);
 //  pwm.setPWM(10, 0, angletoPWM(angle, 10));
 //
 //  pwm.setPWM(12, 0, angletoPWM(angle, 12));
