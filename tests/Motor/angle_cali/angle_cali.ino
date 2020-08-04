@@ -22,9 +22,9 @@ uint8_t servonum = 15;
 // Calibration:
 
 // RF
-// Servo 0: 147 (0 degree) - 407 (90 degree) - 667 (180 degree)
-// Servo 1: 100 (0 degree) - 400 (90 degree) - 700 (180 degree)
-// Servo 2: 160 (0 degree) - 417 (90 degree) - 674 (180 degree)
+// Servo 0: 160 (0 degree) - 400 (90 degree) - 640 (180 degree)
+// Servo 1: 110 (0 degree) - 370 (90 degree) - 630 (180 degree)
+// Servo 2: 130 (0 degree) - 385 (90 degree) - 640 (180 degree)
 // Servo 3: /
 
 // RB
@@ -46,24 +46,24 @@ uint8_t servonum = 15;
 // Servo 15: /
 
 void setup() {
-  //Serial.begin(9600); // Sets the data rate in bits per second (baud) for serial data transmission
-  //Serial.println("16 channel servo test!");
+  Serial.begin(9600); // Sets the data rate in bits per second (baud) for serial data transmission
+  Serial.println("16 channel servo test!");
   
   pwm.begin();
   pwm.setPWMFreq(60); // Analog servos run at ~60 Hz updates
 
   // Print the servo being tested
-  //Serial.print("servonum = ");
-  //Serial.println(servonum);
+  Serial.print("servonum = ");
+  Serial.println(servonum);
 
-  int angle = 45;
+  int angle = 90;
 //  
 //  pwm.setPWM(0, 0, angletoPWM(angle, 0));
 //  pwm.setPWM(1, 0, 300);
 //  pwm.setPWM(2, 0, angletoPWM(angle, 2));
 //
 //  pwm.setPWM(4, 0, 580); // 220 top , 400 horizontal (90), 310 (60), 580 bottom     220 - 400 - 580(tallest)
-//  pwm.setPWM(5, 0, 330); // 330 vertical to the ground, 400 out30, 190 in45           110 - 330 - 470(outermost / rightmost)
+  pwm.setPWM(5, 0, 210); // 330 vertical to the ground, 400 out30, 200 in45           110 - 330 - 470(outermost / rightmost)
 //  pwm.setPWM(6, 0, 345); // 345 verticle to the ground, 220 (45 to the back), 480 (45 to the front)   110 - 345 - ~590 (frontmost)
 //
 //  pwm.setPWM(8, 0, 250); // 380 horizontal (90), ~140 tallest, ~550 shortest (~45 degree to up),  250 45 degree to down)
@@ -72,32 +72,22 @@ void setup() {
 //
 //  pwm.setPWM(12, 0, 560); // 395 horizontal, 265 (45 to down), ~160 tallest, 560 shortest
 //  pwm.setPWM(13, 0, 230); // 160 outmost / leftmost, 230 vertical, 370 (45 to in), 460 innermost
-  pwm.setPWM(14, 0, 380); // 380 vertical, 250 (45 to front), 510 (45 to back), 150 towards front (might hit LF leg), 650 toward back
+//  pwm.setPWM(14, 0, 250); // 380 vertical, 250 (45 to front), 510 (45 to back), 150 towards front (might hit LF leg), 650 toward back
 //  
 }
 
 void loop() {
-//  pwm.setPWM(0, 0, angletoPWM(45, 0));
-//  delay(1000);
-//
-//  pwm.setPWM(0, 0, angletoPWM(90, 0));
-//  delay(1000);
-//
-//  pwm.setPWM(0, 0, angletoPWM(135, 0));
-//  delay(1000);
-//
-//  pwm.setPWM(0, 0, angletoPWM(90, 0));
-//  delay(1000);
+
 }
 
 int angletoPWM(int ang, int servonum) {
   int pulse;
   
   if (servonum == 0)
-    pulse = map(ang, 0, 180, 147, 667); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 160, 640); // map the angle into the PWM
 
   else if (servonum == 1)
-    pulse = map(ang, 0, 180, 100, 700); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 110, 630); // map the angle into the PWM
 
   else if (servonum == 2)
     pulse = map(ang, 0, 180, 130, 640); // map the angle into the PWM
