@@ -22,9 +22,9 @@ uint8_t servonum = 15;
 // Calibration:
 
 // RF
-// Servo 0: 160 (0 degree) - 400 (90 degree) - 640 (180 degree)
-// Servo 1: 110 (0 degree) - 370 (90 degree) - 630 (180 degree)
-// Servo 2: 130 (0 degree) - 385 (90 degree) - 640 (180 degree)
+// Servo 0: 147 (0 degree) - 407 (90 degree) - 667 (180 degree)
+// Servo 1: 100 (0 degree) - 400 (90 degree) - 700 (180 degree)
+// Servo 2: 160 (0 degree) - 417 (90 degree) - 674 (180 degree)
 // Servo 3: /
 
 // RB
@@ -46,28 +46,28 @@ uint8_t servonum = 15;
 // Servo 15: /
 
 void setup() {
-  Serial.begin(9600); // Sets the data rate in bits per second (baud) for serial data transmission
-  Serial.println("16 channel servo test!");
+  //Serial.begin(9600); // Sets the data rate in bits per second (baud) for serial data transmission
+  //Serial.println("16 channel servo test!");
   
   pwm.begin();
   pwm.setPWMFreq(60); // Analog servos run at ~60 Hz updates
 
   // Print the servo being tested
-  Serial.print("servonum = ");
-  Serial.println(servonum);
+  //Serial.print("servonum = ");
+  //Serial.println(servonum);
 
-  int angle = 90;
+  int angle = 45;
 //  
 //  pwm.setPWM(0, 0, angletoPWM(angle, 0));
-//  pwm.setPWM(1, 0, angletoPWM(angle, 1));
-//  pwm.setPWM(2, 0, angletoPWM(angle, 2));
-//
+  pwm.setPWM(1, 0, 400);
+  pwm.setPWM(2, 0, 417);
+
 //  pwm.setPWM(4, 0, angletoPWM(angle, 4));
 //  pwm.setPWM(5, 0, angletoPWM(angle, 5));
 //  pwm.setPWM(6, 0, angletoPWM(angle, 6));
 //
 //  pwm.setPWM(8, 0, angletoPWM(angle, 8));
-  pwm.setPWM(9, 0, 405);
+//  pwm.setPWM(9, 0, angletoPWM(angle, 9));
 //  pwm.setPWM(10, 0, angletoPWM(angle, 10));
 //
 //  pwm.setPWM(12, 0, angletoPWM(angle, 12));
@@ -77,17 +77,27 @@ void setup() {
 }
 
 void loop() {
-
+//  pwm.setPWM(0, 0, angletoPWM(45, 0));
+//  delay(1000);
+//
+//  pwm.setPWM(0, 0, angletoPWM(90, 0));
+//  delay(1000);
+//
+//  pwm.setPWM(0, 0, angletoPWM(135, 0));
+//  delay(1000);
+//
+//  pwm.setPWM(0, 0, angletoPWM(90, 0));
+//  delay(1000);
 }
 
 int angletoPWM(int ang, int servonum) {
   int pulse;
   
   if (servonum == 0)
-    pulse = map(ang, 0, 180, 160, 640); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 147, 667); // map the angle into the PWM
 
   else if (servonum == 1)
-    pulse = map(ang, 0, 180, 110, 630); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 100, 700); // map the angle into the PWM
 
   else if (servonum == 2)
     pulse = map(ang, 0, 180, 130, 640); // map the angle into the PWM
