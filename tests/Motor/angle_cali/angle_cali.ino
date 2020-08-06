@@ -30,7 +30,7 @@ uint8_t servonum = 15;
 // RB
 // Servo 4: 130 (0 degree) - 400 (90 degree) - 670 (180 degree)
 // Servo 5: 95 (0 degree) - 330 (90 degree) - 565 (180 degree)
-// Servo 6: 69 (0 degree) - 345 (90 degree) - 621 (180 degree)
+// Servo 6: 84 (0 degree) - 360 (90 degree) - 636 (180 degree)
 // Servo 7: /
 
 // LF
@@ -76,14 +76,14 @@ void setup() {
 //  
 //  pwm.setPWM(0, 0, angletoPWM(angle, 0));
 //  pwm.setPWM(1, 0, angletoPWM(angle, 1));
-//  pwm.setPWM(2, 0, angletoPWM(angle, 2));
+  pwm.setPWM(2, 0, angletoPWM(angle, 2));
 //  
 //  pwm.setPWM(4, 0, angletoPWM(angle, 4));
 //  pwm.setPWM(5, 0, angletoPWM(angle, 5));
-//  pwm.setPWM(6, 0, angletoPWM(angle, 6));
+//  pwm.setPWM(6, 0, 360);
 //
 //  pwm.setPWM(8, 0, angletoPWM(angle, 8));
-  pwm.setPWM(9, 0, 565);
+//  pwm.setPWM(9, 0, angletoPWM(angle, 9));
 //  pwm.setPWM(10, 0, angletoPWM(angle, 10));
 //
 //  pwm.setPWM(12, 0, angletoPWM(angle, 12));
@@ -114,7 +114,7 @@ int angletoPWM(int ang, int servonum) {
     pulse = map(ang, 0, 180, 95, 565); // map the angle into the PWM
 
   else if (servonum == 6)
-    pulse = map(ang, 0, 180, 69, 621); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 84, 636); // map the angle into the PWM
 
   else if (servonum == 8)
     pulse = map(ang, 0, 180, 80, 680); // map the angle into the PWM
