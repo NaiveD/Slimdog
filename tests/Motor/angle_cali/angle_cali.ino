@@ -28,21 +28,21 @@ uint8_t servonum = 15;
 // Servo 3: /
 
 // RB
-// Servo 4: 220 (0 degree) - 400 (90 degree) - 580 (180 degree)
-// Servo 5: 110 (0 degree) - 330 (90 degree) - 470 (180 degree)
-// Servo 6: 110 (0 degree) - 345 (90 degree) - 590 (180 degree)
+// Servo 4: 130 (0 degree) - 400 (90 degree) - 670 (180 degree)
+// Servo 5: 95 (0 degree) - 330 (90 degree) - 565 (180 degree)
+// Servo 6: 69 (0 degree) - 345 (90 degree) - 621 (180 degree)
 // Servo 7: /
 
 // LF
-// Servo 8: 140 (0 degree) - 380 (90 degree) - 550 (180 degree)
-// Servo 9: 155 (0 degree) - 415 (90 degree) - 675 (180 degree)
-// Servo 10: 140 (0 degree) - 390 (90 degree) - 640 (180 degree)
+// Servo 8: 80 (0 degree) - 380 (90 degree) - 680 (180 degree)
+// Servo 9: 325 (0 degree) - 565 (90 degree) - 805 (180 degree)
+// Servo 10: 150 (0 degree) - 390 (90 degree) - 630 (180 degree)
 // Servo 11: /
 
 // LB
-// Servo 12: 145 (0 degree) - 395 (90 degree) - 645 (180 degree)
-// Servo 13: 125 (0 degree) - 375 (90 degree) - 625 (180 degree)
-// Servo 14: 125 (0 degree) - 380 (90 degree) - 635 (180 degree)
+// Servo 12: 135 (0 degree) - 395 (90 degree) - 655 (180 degree)
+// Servo 13: -50 (0 degree) - 230 (90 degree) - 510 (180 degree)
+// Servo 14: 120 (0 degree) - 380 (90 degree) - 640 (180 degree)
 // Servo 15: /
 
 void setup() {
@@ -108,31 +108,31 @@ int angletoPWM(int ang, int servonum) {
     pulse = map(ang, 0, 180, 130, 640); // map the angle into the PWM
 
   else if (servonum == 4)
-    pulse = map(ang, 0, 180, 155, 655); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 130, 670); // map the angle into the PWM
 
   else if (servonum == 5)
-    pulse = map(ang, 0, 180, 120, 650); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 95, 565); // map the angle into the PWM
 
   else if (servonum == 6)
-    pulse = map(ang, 0, 180, 130, 650); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 69, 621); // map the angle into the PWM
 
   else if (servonum == 8)
-    pulse = map(ang, 0, 180, 145, 635); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 80, 680); // map the angle into the PWM
 
   else if (servonum == 9)
-    pulse = map(ang, 0, 180, 155, 675); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 325, 805); // map the angle into the PWM
 
   else if (servonum == 10)
-    pulse = map(ang, 0, 180, 140, 640); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 150, 630); // map the angle into the PWM
 
   else if (servonum == 12)
-    pulse = map(ang, 0, 180, 145, 645); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 135, 655); // map the angle into the PWM
 
   else if (servonum == 13)
-    pulse = map(ang, 0, 180, 125, 625); // map the angle into the PWM
+    pulse = map(ang, 0, 180, -50, 510); // map the angle into the PWM
 
   else if (servonum == 14)
-    pulse = map(ang, 0, 180, 125, 635); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 120, 640); // map the angle into the PWM
 
   else
     pulse = map(ang, 0, 180, SERVOMIN, SERVOMAX); // map the angle into the PWM
