@@ -57,15 +57,34 @@ void setup() {
 
   // Given an end point (x, y, z)
   // Test (0, 0, -500) and (0, 0, -400) for each of the 4 legs
-  x = -50, y = 0, z = -450;
+  x = 0, y = 0, z = -400;
 
-  set_leg(x, y, z, 0); // Right Front
-  set_leg(x, y, z, 1); // Left Front
-  set_leg(x, y, z, 2); // Left Back
-  set_leg(x, y, z, 3); // Right Back
+  set_leg(x+30, y, z, 0); // Right Front
+  set_leg(x+30, y, z, 1); // Left Front
+  set_leg(x-50, y, z, 2); // Left Back
+  set_leg(x-50, y, z, 3); // Right Back
 }
 
 void loop() {
+  float x, y, z; // End point P(x, y, z) 
+  int height = 100;
+  x = 0, y = 0, z = -450;
+//    
+  set_leg(x+30, y+20, z+height, 0); // Right Front
+  set_leg(x-50, y-20, z+height, 2); // Left Back
+  delay(150);
+  
+  set_leg(x+30, y+20, z, 0); // Right Front
+  set_leg(x-50, y-20, z, 2); // Left Back
+  delay(150);
+
+  set_leg(x+30, y-20, z+height, 1); // Left Front
+  set_leg(x-50, y+20, z+height, 3); // Right Back
+  delay(150);
+
+  set_leg(x+30, y-20, z, 1); // Left Front
+  set_leg(x-50, y+20, z, 3); // Right Back
+  delay(150);
 }
 
 
@@ -156,10 +175,10 @@ float servo2_solver(float x, float y, float z, int leg, float servo1_angle) {
       servo2_angle = 180 - (alpha+beta);
 
     // Range of the orange servos on the right legs (0 - 180 degrees)
-    if (servo2_angle > 170)
-      servo2_angle = 170;
-    else if (servo2_angle < 10)
-      servo2_angle = 10;
+    if (servo2_angle > 140)
+      servo2_angle = 140;
+    else if (servo2_angle < 40)
+      servo2_angle = 40;
   }
   else if (leg == 1) { // left leg
     if (y2d >= 0)
@@ -168,10 +187,10 @@ float servo2_solver(float x, float y, float z, int leg, float servo1_angle) {
       servo2_angle = alpha + beta;
 
     // Range of the orange servos on the left legs (0 - 180 degrees)
-    if (servo2_angle > 170)
-      servo2_angle = 170;
-    else if (servo2_angle < 10)
-      servo2_angle = 10;
+    if (servo2_angle > 140)
+      servo2_angle = 140;
+    else if (servo2_angle < 40)
+      servo2_angle = 40;
   }
 
   return servo2_angle;
@@ -248,10 +267,11 @@ float set_leg(float x, float y, float z, int leg) {
     angle1 = servo1_solver(x, y, z, 0); // Yellow
     angle2 = servo2_solver(x, y, z, 0, angle1); // Orange
     angle3 = servo3_solver(x, y, z, 0); // Green
-
+    
     pwm.setPWM(0+1, 0, angletoPWM(180-angle1, 0+1)); // Yellow
     pwm.setPWM(0+2, 0, angletoPWM(angle2, 0+2)); // Orange
     pwm.setPWM(0, 0, angletoPWM(angle3, 0)); // Green
+    
 
     Serial.print("RF: angle1 = ");
     Serial.print(180-angle1);
@@ -266,7 +286,7 @@ float set_leg(float x, float y, float z, int leg) {
     angle1 = servo1_solver(x, y, z, 1); // Yellow
     angle2 = servo2_solver(x, y, z, 1, angle1); // Orange
     angle3 = servo3_solver(x, y, z, 1); // Green
-
+    
     pwm.setPWM(8+1, 0, angletoPWM(180-angle1, 8+1)); // Yellow
     pwm.setPWM(8+2, 0, angletoPWM(angle2, 8+2)); // Orange
     pwm.setPWM(8, 0, angletoPWM(angle3, 8)); // Green
@@ -321,40 +341,40 @@ int angletoPWM(int ang, int servonum) {
   int pulse;
   
   if (servonum == 0)
-    pulse = map(ang, 0, 180, 160, 640); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 135, 675); // map the angle into the PWM
 
   else if (servonum == 1)
-    pulse = map(ang, 0, 180, 110, 630); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 110, 680); // map the angle into the PWM
 
   else if (servonum == 2)
-    pulse = map(ang, 0, 180, 130, 640); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 180, 660); // map the angle into the PWM
 
   else if (servonum == 4)
-    pulse = map(ang, 0, 180, 155, 655); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 130, 670); // map the angle into the PWM
 
   else if (servonum == 5)
-    pulse = map(ang, 0, 180, 120, 650); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 95, 565); // map the angle into the PWM
 
   else if (servonum == 6)
-    pulse = map(ang, 0, 180, 130, 650); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 84, 636); // map the angle into the PWM
 
   else if (servonum == 8)
-    pulse = map(ang, 0, 180, 145, 635); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 80, 680); // map the angle into the PWM
 
   else if (servonum == 9)
-    pulse = map(ang, 0, 180, 155, 675); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 325, 805); // map the angle into the PWM
 
   else if (servonum == 10)
-    pulse = map(ang, 0, 180, 140, 640); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 150, 630); // map the angle into the PWM
 
   else if (servonum == 12)
-    pulse = map(ang, 0, 180, 145, 645); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 135, 655); // map the angle into the PWM
 
   else if (servonum == 13)
-    pulse = map(ang, 0, 180, 125, 625); // map the angle into the PWM
+    pulse = map(ang, 0, 180, -50, 510); // map the angle into the PWM
 
   else if (servonum == 14)
-    pulse = map(ang, 0, 180, 125, 635); // map the angle into the PWM
+    pulse = map(ang, 0, 180, 120, 640); // map the angle into the PWM
 
   else
     pulse = map(ang, 0, 180, SERVOMIN, SERVOMAX); // map the angle into the PWM
