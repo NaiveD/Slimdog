@@ -1,19 +1,8 @@
 #include <Wire.h> // Used for I2C (IMU and PCA9685)
 #include <Adafruit_PWMServoDriver.h> // Used for the PCA9685
 
-// Might need to define SERVOMIN and SERVOMAX for each of the 12 servos
-#define SERVOMIN 110 // minimum pulse length count
-#define SERVOMAX 620 // maximum  pulse length count
-
 // The pwm object
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
-
-// Servo number
-//     G   Y   O   /
-// RF: 0,  1,  2,  3
-// RB: 4,  5,  6,  7
-// LF: 8,  9,  10, 11
-// LB: 12, 13, 14, 15
 
 // Inverse Kiematics (IK) functions
 float servo1_solver(float x, float y, float z, int leg); // Yellow Servo
@@ -23,8 +12,23 @@ float servo3_solver(float x, float y, float z, int leg); // Green Servo
 // Set the leg to position (x, y, z)
 float set_leg(float x, float y, float z, int leg);
 
+// Move all the 12 motors according to the calculated angles
+void move_motor();
+
 // Helper functions
 int angletoPWM(int ang);
+
+// Servo number
+//     G   Y   O   /
+// RF: 0,  1,  2,  3
+// RB: 4,  5,  6,  7
+// LF: 8,  9,  10, 11
+// LB: 12, 13, 14, 15
+
+// The angle for the 12 servo motors
+float angle0, angle1, angle2, angle4, angle5, angle6, angle8, angle9, angle10, angle12, angle13, angle14;
+float x, y, z; // End point P(x, y, z)
+// int x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
 
 /* ============= Constants ============== */
 // lengths (mm)
@@ -52,79 +56,41 @@ void setup() {
   pwm.begin();
   pwm.setPWMFreq(60); // Analog servos run at ~60 Hz updates
 
-  float x, y, z; // End point P(x, y, z)  
-  float angle1_r, angle2_r, angle3_r, angle1_l, angle2_l, angle3_l; // angles of the 3 motors for right and left legs
-
-  // Given an end point (x, y, z)
-  // Test (0, 0, -500) and (0, 0, -400) for each of the 4 legs
+  // Initial end point
   x = 0, y = 0, z = -450;
-
+  
   set_leg(x+30, y, z, 0); // Right Front
   set_leg(x+30, y, z, 1); // Left Front
   set_leg(x-50, y, z, 2); // Left Back
   set_leg(x-50, y, z, 3); // Right Back
+  
+  move_motor();
 }
 
 void loop() {
-  float x, y, z; // End point P(x, y, z) 
+  // Trotting
   int height = 100;
-  x = 0, y = 0, z = -450;
-
-  // Trotting    
+  
   set_leg(x+30, y+20, z+height, 0); // Right Front
   set_leg(x-50, y-20, z+height, 2); // Left Back
+  move_motor();
   delay(200);
   
   set_leg(x+30, y+20, z, 0); // Right Front
   set_leg(x-50, y-20, z, 2); // Left Back
+  move_motor();
   delay(200);
 
   set_leg(x+30, y-20, z+height, 1); // Left Front
   set_leg(x-50, y+20, z+height, 3); // Right Back
+  move_motor();
   delay(200);
 
   set_leg(x+30, y-20, z, 1); // Left Front
   set_leg(x-50, y+20, z, 3); // Right Back
+  move_motor();
   delay(200);
-
-// Bouncing
-//  set_leg(x+30, y+20, z, 0); // Right Front
-//  set_leg(x+30, y-20, z, 1); // Left Front
-//  set_leg(x-50, y-20, z, 2); // Left Back
-//  set_leg(x-50, y+20, z, 3); // Right Back
-//  delay(150);
-//  
-//  set_leg(x+30, y+20, z+height, 0); // Right Front
-//  set_leg(x+30, y-20, z+height, 1); // Left Front
-//  set_leg(x-50, y-20, z+height, 2); // Left Back
-//  set_leg(x-50, y+20, z+height, 3); // Right Back
-//  delay(150);
-//  
-//  set_leg(x+30, y+20, z, 0); // Right Front
-//  set_leg(x+30, y-20, z, 1); // Left Front
-//  set_leg(x-50, y-20, z, 2); // Left Back
-//  set_leg(x-50, y+20, z, 3); // Right Back
-//  delay(150);
-
-  // Pacing
-//  set_leg(x+30, y+20, z+height, 0); // Right Front
-//  set_leg(x-50, y+20, z+height, 3); // Right Back
-//  delay(200);
-//  
-//  set_leg(x+30, y+20, z, 0); // Right Front
-//  set_leg(x-50, y+20, z, 3); // Right Back
-//  delay(200);
-//
-//  set_leg(x+30, y-20, z+height, 1); // Left Front
-//  set_leg(x-50, y-20, z+height, 2); // Left Back
-//  delay(200);
-//
-//  set_leg(x+30, y-20, z, 1); // Left Front
-//  set_leg(x-50, y-20, z, 2); // Left Back
-//  delay(200);
- 
 }
-
 
 /* ================ IK functions ================ */
 // the yellow servo
@@ -195,17 +161,6 @@ float servo2_solver(float x, float y, float z, int leg, float servo1_angle) {
     alpha = acos((H*H+OP*OP-l2*l2)/(2*H*OP)) * 180/PI; // degree
   beta = acos(x/OP) * 180/PI; //degree
 
-//  Serial.print("Zmo = ");
-//  Serial.print(Zmo);
-//  Serial.print(", y2d = ");
-//  Serial.print(y2d);
-//  Serial.print(", OP = ");
-//  Serial.print(OP);
-//  Serial.print(", alpha = ");
-//  Serial.print(alpha);
-//  Serial.print(", beta = ");
-//  Serial.println(beta);
-  
   if (leg == 0) {// right leg
     if (y2d >= 0)
       servo2_angle = 180 - (alpha-beta);
@@ -293,83 +248,114 @@ float servo3_solver(float x, float y, float z, int leg) {
 
 /* ================================================ */
 
-/* Set the LEG leg to position (X, Y, Z) 
+/* ================================================ */
+/* Given the end point (X, Y, Z) and the LEG number,  
+ * set the angles of the servo motors.
    LEG: 0 - Right Front
         1 - Left Front
         2 - Left Back
         3 - Right Back                   */
 float set_leg(float x, float y, float z, int leg) {
-  float angle1, angle2, angle3; // angles of the 3 motors for both right and left legs
-  
-  if (leg == 0) { // Right Front   
-    angle1 = servo1_solver(x, y, z, 0); // Yellow
-    angle2 = servo2_solver(x, y, z, 0, angle1); // Orange
-    angle3 = servo3_solver(x, y, z, 0); // Green
-    
-    pwm.setPWM(0+1, 0, angletoPWM(180-angle1, 0+1)); // Yellow
-    pwm.setPWM(0+2, 0, angletoPWM(angle2, 0+2)); // Orange
-    pwm.setPWM(0, 0, angletoPWM(angle3, 0)); // Green
-    
+  if (leg == 0) { // Right Front
+    // Green motor
+    angle0 = servo3_solver(x, y, z, 0);
 
-    Serial.print("RF: angle1 = ");
-    Serial.print(180-angle1);
-    Serial.print(", angle2 = ");
-    Serial.print(angle2);
-    Serial.print(", angle3 = ");
-    Serial.println(angle3);
+    // Yellow motor
+    angle1 = servo1_solver(x, y, z, 0);
+    angle1 = 180 - angle1;
 
+    // Orange motor
+    angle2 = servo2_solver(x, y, z, 0, angle1);
+    
+    return;
   }
 
   else if (leg == 1) { // Left Front
-    angle1 = servo1_solver(x, y, z, 1); // Yellow
-    angle2 = servo2_solver(x, y, z, 1, angle1); // Orange
-    angle3 = servo3_solver(x, y, z, 1); // Green
-    
-    pwm.setPWM(8+1, 0, angletoPWM(180-angle1, 8+1)); // Yellow
-    pwm.setPWM(8+2, 0, angletoPWM(angle2, 8+2)); // Orange
-    pwm.setPWM(8, 0, angletoPWM(angle3, 8)); // Green
+    // Green motor
+    angle8 = servo3_solver(x, y, z, 1);
 
-    Serial.print("LF: angle1 = ");
-    Serial.print(180-angle1);
-    Serial.print(", angle2 = ");
-    Serial.print(angle2);
-    Serial.print(", angle3 = ");
-    Serial.println(angle3);
+    // Yellow motor
+    angle9 = servo1_solver(x, y, z, 1);
+    angle9 = 180 - angle9;
+
+    // Orange motor
+    angle10 = servo2_solver(x, y, z, 1, angle9);
+
+    return;
   }
 
   else if (leg == 2) { // Left Back
-    angle1 = servo1_solver(x, y, z, 1); // Yellow
-    angle2 = servo2_solver(x, y, z, 1, angle1); // Orange
-    angle3 = servo3_solver(x, y, z, 1); // Green
+    // Green motor
+    angle12 = servo3_solver(x, y, z, 1);
 
-    pwm.setPWM(12+1, 0, angletoPWM(angle1, 12+1)); // Yellow
-    pwm.setPWM(12+2, 0, angletoPWM(angle2, 12+2)); // Orange
-    pwm.setPWM(12, 0, angletoPWM(angle3, 12)); // Green
+    // Yellow motor
+    angle13 = servo1_solver(x, y, z, 1);
 
-    Serial.print("LB: angle1 = ");
-    Serial.print(angle1);
-    Serial.print(", angle2 = ");
-    Serial.print(angle2);
-    Serial.print(", angle3 = ");
-    Serial.println(angle3);
+    // Orange motor
+    angle14 = servo2_solver(x, y, z, 1, angle13);
+
+    return;
   }
 
   else if (leg == 3) { // Right Back
-    angle1 = servo1_solver(x, y, z, 0); // Yellow
-    angle2 = servo2_solver(x, y, z, 0, angle1); // Orange
-    angle3 = servo3_solver(x, y, z, 0); // Green
+    // Green motor
+    angle4 = servo3_solver(x, y, z, 0);
 
-    pwm.setPWM(4+1, 0, angletoPWM(angle1, 4+1)); // Yellow
-    pwm.setPWM(4+2, 0, angletoPWM(angle2, 4+2)); // Orange
-    pwm.setPWM(4, 0, angletoPWM(angle3, 4)); // Green
+    // Yellow motor
+    angle5 = servo1_solver(x, y, z, 0);
 
-    Serial.print("RB: angle1 = ");
-    Serial.print(angle1);
-    Serial.print(", angle2 = ");
-    Serial.print(angle2);
-    Serial.print(", angle3 = ");
-    Serial.println(angle3);
+    // Orange motor
+    angle6 = servo2_solver(x, y, z, 0, angle5);
+
+    return;
   }
+}
+
+// Move all the 12 motors according to the calculated angles
+void move_motor() {
+  
+//  Serial.print("angle0 = ");
+//  Serial.print(angle0);
+//  Serial.print(", angle1 = ");
+//  Serial.print(angle1);
+//  Serial.print(", angle2 = ");
+//  Serial.print(angle2);
+//  Serial.print(", angle4 = ");
+//  Serial.print(angle4);
+//  Serial.print(", angle5 = ");
+//  Serial.print(angle5);
+//  Serial.print(", angle6 = ");
+//  Serial.print(angle6);
+//  Serial.print(", angle8 = ");
+//  Serial.print(angle8);
+//  Serial.print(", angle9 = ");
+//  Serial.print(angle9);
+//  Serial.print(", angle10 = ");
+//  Serial.print(angle10);
+//  Serial.print(", angle12 = ");
+//  Serial.print(angle12);
+//  Serial.print(", angle13 = ");
+//  Serial.print(angle13);
+//  Serial.print(", angle14 = ");
+//  Serial.println(angle14);
+  
+  // Move the Yellow motors (1, 5, 9, 13)
+  pwm.setPWM(1, 0, angletoPWM(angle1, 1)); 
+  pwm.setPWM(5, 0, angletoPWM(angle5, 5));
+  pwm.setPWM(9, 0, angletoPWM(angle9, 9));
+  pwm.setPWM(13, 0, angletoPWM(angle13, 13));
+
+  // Move the Orange motors (2, 6, 10, 14)
+  pwm.setPWM(2, 0, angletoPWM(angle2, 2));
+  pwm.setPWM(6, 0, angletoPWM(angle6, 6));
+  pwm.setPWM(10, 0, angletoPWM(angle10, 10));
+  pwm.setPWM(14, 0, angletoPWM(angle14, 14));
+
+  // Move the Green motors (0, 4, 8, 12)
+  pwm.setPWM(0, 0, angletoPWM(angle0, 0));
+  pwm.setPWM(4, 0, angletoPWM(angle4, 4));
+  pwm.setPWM(8, 0, angletoPWM(angle8, 8));
+  pwm.setPWM(12, 0, angletoPWM(angle12, 12));
 }
 
 /* ================================================ */
@@ -413,9 +399,6 @@ int angletoPWM(int ang, int servonum) {
 
   else if (servonum == 14)
     pulse = map(ang, 0, 180, 120, 640); // map the angle into the PWM
-
-  else
-    pulse = map(ang, 0, 180, SERVOMIN, SERVOMAX); // map the angle into the PWM
-       
+    
   return pulse;
 }
