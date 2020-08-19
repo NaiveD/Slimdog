@@ -9,12 +9,12 @@ double timer = 0; // Previous time
 // ================== Variables for IMU =====================
 int weight = 30; // weight of complementary filter
 double gyro_roll = 0; // Roll angle calculated by gyroscope
-double acce_roll = 0; // Roll angle calculated by accelarator
+double acce_roll = 0; // Roll angle calculated by accelerometer
 double filter_roll = 0; // Roll angle after filtering
 double delta_angle = 0;
 
 double gyro_pitch = 0; // Roll angle calculated by gyroscope
-double acce_pitch = 0; // Roll angle calculated by accelarator
+double acce_pitch = 0; // Roll angle calculated by accelerometer
 double filter_pitch = 0; // Roll angle after filtering
 double delta_angle2 = 0;
 // ==========================================================
