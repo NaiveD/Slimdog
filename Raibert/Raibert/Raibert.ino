@@ -57,7 +57,7 @@ void setup() {
   pwm.setPWMFreq(60); // Analog servos run at ~60 Hz updates
 
   // Initial end point
-  x = 0, y = 0, z = -400;
+  x = 0, y = 0, z = -450;
   
   set_leg(x+30, y, z, 0); // Right Front
   set_leg(x+30, y, z, 1); // Left Front
@@ -65,100 +65,59 @@ void setup() {
   set_leg(x-50, y, z, 3); // Right Back
   
   move_motor();
+
+  delay(5000);
 }
 
 void loop() {
   // Trotting
-//  int height = 100;
-//
-//  // Lift RF and LB
-//  set_leg(x+30, y+20, z+height, 0); // Right Front
-//  set_leg(x-50, y-20, z+height, 2); // Left Back
-//  // Orange Motors
-//  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-//  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-//  // Green Motors
-//  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-//  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-//  delay(200);
-//
-//  // Lower RF and LB
-//  set_leg(x+30, y+20, z, 0); // Right Front
-//  set_leg(x-50, y-20, z, 2); // Left Back
-//  // Orange Motors
-//  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-//  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-//  // Green Motors
-//  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-//  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-//  delay(200);
-//
-//  // Lift LF and RB
-//  set_leg(x+30, y-20, z+height, 1); // Left Front
-//  set_leg(x-50, y+20, z+height, 3); // Right Back
-//  // Orange Motors
-//  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-//  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-//  // Green Motors
-//  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-//  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
-//  delay(200);
-//
-//  // Lower LF and RB
-//  set_leg(x+30, y-20, z, 1); // Left Front
-//  set_leg(x-50, y+20, z, 3); // Right Back
-//  // Orange Motors
-//  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-//  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-//  // Green Motors
-//  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-//  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
-//  delay(200);
+  int height = 100;
 
-  int x_ft = 70;  // amplitude of swing
-  int z_lift = 50;  // amplitude of lifting foot
-                    // z increases along up direction
+  // Lift RF and LB
+  set_leg(x+30, y+20, z+height, 0); // Right Front
+  set_leg(x-50, y-20, z+height, 2); // Left Back
+  // Orange Motors
+  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+  // Green Motors
+  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+
+  delay(150);
   
-  int t_flight = 200;
-  int t_land = 200;
-  set_leg(x+30+x_ft, y-20, z, 1);  // LF fore
-  set_leg(x-50+x_ft, y+20, z, 3);  // RB fore
-  set_leg(x+30-x_ft, y+20, z, 0);  // RF aft
-  set_leg(x-50-x_ft, y-20, z, 2);  // LB aft
-  move_motor();
 
-  // Save some time for flight phase
-  delay(t_flight);
-  // After flight phase, retrieve legs to support
-  set_leg(x+30, y-20, z-z_lift, 1); // LF landing
-  set_leg(x-50, y+20, z-z_lift, 3); // RB landing
-  set_leg(x+30, y+20, z       , 0); // RF moving
-  set_leg(x-50, y-20, z       , 2); // LB moving
-  move_motor();
+  // Lower RF and LB
+  set_leg(x+30, y+20, z, 0); // Right Front
+  set_leg(x-50, y-20, z, 2); // Left Back
+  // Orange Motors
+  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+  // Green Motors
+  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+  delay(150);
 
-  // Landing phase
-  delay(t_land);
+  // Lift LF and RB
+  set_leg(x+30, y-20, z+height, 1); // Left Front
+  set_leg(x-50, y+20, z+height, 3); // Right Back
+  // Orange Motors
+  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+  // Green Motors
+  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
+  delay(150);
 
-  set_leg(x+30-x_ft, y-20, z, 1);  // LF aft
-  set_leg(x-50-x_ft, y+20, z, 3);  // RB aft
-  set_leg(x+30+x_ft, y+20, z, 0);  // RF fore
-  set_leg(x-50+x_ft, y-20, z, 2);  // LB fore
-  move_motor();
-
-  // Save some time for flight phase
-  delay(t_flight);
-  // After flight phase, retrieve legs to support
-  set_leg(x+30, y-20, z       , 1); // LF moving
-  set_leg(x-50, y+20, z       , 3); // RB moving
-  set_leg(x+30, y+20, z-z_lift, 0); // RF landing
-  set_leg(x-50, y-20, z-z_lift, 2); // LB landing
-  move_motor();
-
-  // Landing phase
-  delay(t_land);
-
-  
-  
+  // Lower LF and RB
+  set_leg(x+30, y-20, z, 1); // Left Front
+  set_leg(x-50, y+20, z, 3); // Right Back
+  // Orange Motors
+  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+  // Green Motors
+  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
+  delay(150);
 }
 
 /* ================ IK functions ================ */

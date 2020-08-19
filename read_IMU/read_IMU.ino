@@ -3,7 +3,7 @@
  
 GY_85 GY85; // create the IMU object
 
-int weight = 100; // weight of complementary filter
+int weight = 30; // weight of complementary filter
 double interval; // time interval
 double timer = 0; // Previous time
    
@@ -33,6 +33,8 @@ void loop()
   float gy = GY85.gyro_y( GY85.readGyro() );
   float gz = GY85.gyro_z( GY85.readGyro() );
 // float gt = GY85.temp  ( GY85.readGyro() ); // temperature (no use)
+  if (abs(gx) < 0.15)
+    gx = 0;
 
   // Read from compass (no use)
 // int cx = GY85.compass_x( GY85.readFromCompass() );
@@ -45,22 +47,34 @@ void loop()
 
   // interval is around 81000 (microsecond) = 81000/1000 (millisecond) = 81000/1000000 (second)
   // here interval/1000000 is transforming from microsecond to second
-  debug = gx*(interval/1000000); // delta angle (debug) = angular rate(gx) * time interval(interval)  (in degree)
+  debug = ((gx)/1000000)*interval;         // Angle according to gyro // delta angle (debug) = angular rate(gx) * time interval(interval)  (in degree)
   gyrox += debug; // Roll angle according to gyro
- 
-  roll = (atan2(-ax, az) * 180/PI) -2.90f;     // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
-  roll += 180;
 
-  // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
+  
+ 
+//  roll = (atan2(az, ay) * 180/PI) -2.90f;     // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
+    roll = 90-abs((atan2(az, ay) * 180/PI));     // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
+    
+// Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
   filterroll = (roll + weight * gyrox) / (1 + weight);
 
   // Roll by gyro
-  Serial.print("gyro_roll = ");
+  Serial.print("gx = ");
+  Serial.print(gx);
+  Serial.print(",");
+  Serial.print("debug = ");
+  Serial.print(debug);
+  Serial.print(",");
+  Serial.print("gyroroll = ");
   Serial.print(gyrox);
   Serial.print(", ");
 
   // Roll by accelerometer
-  Serial.print(", accel_roll = ");
+//  Serial.print("ay = ");
+//  Serial.print(ay);
+//  Serial.print(", az = ");
+//  Serial.print(az);
+  Serial.print("accelroll = ");
   Serial.print(roll);
 
   // Roll by complementary filter
