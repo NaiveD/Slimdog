@@ -54,12 +54,21 @@ void loop() {
   delta_angle = gx * (interval/1000000);
   gyro_roll += delta_angle;
 
-  Serial.print("gx = ");
-  Serial.print(gx);
-  Serial.print(", delta_angle = ");
-  Serial.print(delta_angle);
-  Serial.print(", gyro_roll = ");
-  Serial.println(gyro_roll);
+  acce_roll = 90-abs((atan2(az, ax) * 180/PI));        // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
 
+  // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
+  filter_roll = (acce_roll + weight * gyro_roll) / (1 + weight);
+  
+//  Serial.print("gx = ");
+//  Serial.print(gx);
+//  Serial.print(", delta_angle = ");
+//  Serial.print(delta_angle);
+  Serial.print(", acce_roll = ");
+  Serial.print(acce_roll);
+  Serial.print(", gyro_roll = ");
+  Serial.print(gyro_roll);
+  Serial.print(", filter_roll = ");
+  Serial.println(filter_roll);
+  
   delay(50);
 }
