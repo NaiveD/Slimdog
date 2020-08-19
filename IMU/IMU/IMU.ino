@@ -12,6 +12,11 @@ double acce_roll = 0; // Roll angle calculated by accelarator
 double filter_roll = 0; // Roll angle after filtering
 double delta_angle = 0;
 
+double gyro_pitch = 0;
+double acce_pitch = 0;
+double filter_pitch = 0;
+double delta_angle2 = 0;
+
 void setup() {
   // put your setup code here, to run once:
   Wire.begin(); // For I2C
@@ -54,15 +59,26 @@ void loop() {
   delta_angle = gx * (interval/1000000);
   gyro_roll += delta_angle;
 
-  acce_roll = 90-abs((atan2(az, ax) * 180/PI));        // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
+  delta_angle2 = gy * (interval/1000000);
+  gyro_pitch += delta_angle2;
+
+  acce_roll = 90 - abs((atan2(az, ax) * 180/PI));        // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
+  acce_pitch = -(90 - abs((atan2(az, ay) * 180/PI)));
 
   // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
   filter_roll = (acce_roll + weight * gyro_roll) / (1 + weight);
+  filter_pitch = (acce_pitch + weight * gyro_pitch) / (1+ weight);
   
 //  Serial.print("gx = ");
 //  Serial.print(gx);
 //  Serial.print(", delta_angle = ");
 //  Serial.print(delta_angle);
+  Serial.print("acce_pitch = ");
+  Serial.print(acce_pitch);
+  Serial.print(", gyro_pitch = ");
+  Serial.print(gyro_pitch);
+  Serial.print(", filter_pitch = ");
+  Serial.print(filter_pitch);
   Serial.print(", acce_roll = ");
   Serial.print(acce_roll);
   Serial.print(", gyro_roll = ");
