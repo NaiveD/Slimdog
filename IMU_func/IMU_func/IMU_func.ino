@@ -45,16 +45,16 @@ void loop() {
   double roll = read_roll();
   double pitch = read_pitch();
 
-  Serial.print("roll = ");
-  Serial.print(roll);
-  Serial.print(", pitch = ");
-  Serial.println(pitch);
+  Serial.print("pitch = ");
+  Serial.print(pitch);
+  Serial.print(", roll = ");
+  Serial.println(roll);
   
 
   delay(50);
 }
 
-double read_roll() {
+double read_pitch() {
 
   // Read accelerometer
   double ax = GY85.accelerometer_x( GY85.readFromAccelerometer() ); // Acceleration in x direction
@@ -64,17 +64,17 @@ double read_roll() {
   float gx = GY85.gyro_x( GY85.readGyro() );
 
   delta_angle = gx * (interval/1000000);
-  gyro_roll += delta_angle;
+  gyro_pitch += delta_angle;
   
-  acce_roll = 90 - abs((atan2(az, ax) * 180/PI));        // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
+  acce_pitch = 90 - abs((atan2(az, ax) * 180/PI));        // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
 
   // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
-  filter_roll = (acce_roll + weight * gyro_roll) / (1 + weight);
+  filter_pitch = (acce_pitch + weight * gyro_pitch) / (1 + weight);
 
-  return filter_roll;
+  return filter_pitch;
 }
 
-double read_pitch() {
+double read_roll() {
   // Read accelerometer
   double ay = GY85.accelerometer_y( GY85.readFromAccelerometer() ); // Acceleration in y direction
   double az = GY85.accelerometer_z( GY85.readFromAccelerometer() ); // Acceleration in z direction
@@ -83,12 +83,12 @@ double read_pitch() {
   float gy = GY85.gyro_y( GY85.readGyro() );
 
   delta_angle2 = gy * (interval/1000000);
-  gyro_pitch += delta_angle2;
+  gyro_roll += delta_angle2;
   
-  acce_pitch = -(90 - abs((atan2(az, ay) * 180/PI)));
+  acce_roll = -(90 - abs((atan2(az, ay) * 180/PI)));
 
   // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
-  filter_pitch = (acce_pitch + weight * gyro_pitch) / (1+ weight);
+  filter_roll = (acce_roll + weight * gyro_roll) / (1+ weight);
 
-  return filter_pitch;
+  return filter_roll;
 }
