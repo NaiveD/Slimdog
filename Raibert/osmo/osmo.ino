@@ -2,6 +2,7 @@
 #include <Wire.h> // Used for I2C
 #include <Adafruit_PWMServoDriver.h> // Used for the PCA9685
 
+#define CLAMP(x, low, high) ((x) > (high) ? (high) : ((x) < (low) ? (low) : (x)))
 /****************** Declaration *********************/
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 GY_85 GY85;
@@ -73,7 +74,7 @@ void loop(){
   }
 
   move_motor(angle);
-  delay(50);
+  delay(250);
 }
 
 
@@ -103,18 +104,19 @@ void getAttitude(GY_85 *GY85, Attitude *att){
   att->pitch = (att->a_pitch + att->weight * att->g_pitch) / (1 + att->weight);
   att->pitch_v = gy;
   att->roll_v = gx;
-//   Serial.print("acce_pitch = ");
-//   Serial.print(acce_pitch);
-//   Serial.print(", gyro_pitch = ");
-//   Serial.print(gyro_pitch);
-//   Serial.print(", filter_pitch = ");
-//   Serial.print(filter_pitch);
-//   Serial.print(", acce_roll = ");
-//   Serial.print(acce_roll);
-//   Serial.print(", gyro_roll = ");
-//   Serial.print(gyro_roll);
-//   Serial.print(", filter_roll = ");
-//   Serial.println(filter_roll);
+
+  Serial.print("acce_pitch = ");
+  Serial.print(att->a_pitch);
+  Serial.print(", gyro_pitch = ");
+  Serial.print(att->g_pitch);
+  Serial.print(", filter_pitch = ");
+  Serial.print(att->pitch);
+  Serial.print(", acce_roll = ");
+  Serial.print(att->a_roll);
+  Serial.print(", gyro_roll = ");
+  Serial.print(att->g_roll);
+  Serial.print(", filter_roll = ");
+  Serial.println(att->roll);
   
   //delay(50);
 }
@@ -163,6 +165,22 @@ int angletoPWM(int ang, int servonum) {
 }
 
 void move_motor(int *angle){
+  // clamp the angle[]
+  {
+    angle[0] = CLAMP(angle[0], 30, 150);
+    angle[1] = CLAMP(angle[1], 6, 144);
+    angle[2] = CLAMP(angle[2], 9, 165);
+    angle[4] = CLAMP(angle[4], 30, 150);
+    angle[5] = CLAMP(angle[5], 6, 144);
+    angle[6] = CLAMP(angle[6], 9, 165);
+    angle[8] = CLAMP(angle[8], 18, 141);
+    angle[9] = CLAMP(angle[9], 0, 133);
+    angle[10] = CLAMP(angle[10], 0, 180);
+    angle[12] = CLAMP(angle[12], 9, 147);
+    angle[13] = CLAMP(angle[13], 68, 164);
+    angle[14] = CLAMP(angle[14], 11, 180);
+  }
+
   // Move the Yellow motors (1, 5, 9, 13)
   pwm.setPWM(1, 0, angletoPWM(angle[1], 1)); // RF
   pwm.setPWM(5, 0, angletoPWM(angle[5], 5)); // RB
@@ -181,5 +199,3 @@ void move_motor(int *angle){
   pwm.setPWM(8, 0, angletoPWM(angle[8], 8)); // LF
   pwm.setPWM(12, 0, angletoPWM(angle[12], 12)); // LB
 }
-
-
