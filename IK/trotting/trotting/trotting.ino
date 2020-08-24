@@ -1,5 +1,29 @@
+#include "GY_85.h" // IMU
 #include <Wire.h> // Used for I2C (IMU and PCA9685)
 #include <Adafruit_PWMServoDriver.h> // Used for the PCA9685
+
+GY_85 GY85; // create the IMU object
+
+double interval; // time interval
+double timer = 0; // Previous time
+
+// ================== Variables for IMU =====================
+int weight = 30; // weight of complementary filter
+double gyro_roll = 0; // Roll angle calculated by gyroscope
+double acce_roll = 0; // Roll angle calculated by accelerometer
+double filter_roll = 0; // Roll angle after filtering
+double delta_angle = 0;
+
+double gyro_pitch = 0; // Roll angle calculated by gyroscope
+double acce_pitch = 0; // Roll angle calculated by accelerometer
+double filter_pitch = 0; // Roll angle after filtering
+double delta_angle2 = 0;
+// ==========================================================
+
+// ================== Functions for IMU =====================
+double read_roll();
+double read_pitch();
+// ==========================================================
 
 // The pwm object
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
@@ -50,8 +74,15 @@ float theta1 = 43.4193;
 /* ====================================== */
 
 void setup() {
+  Wire.begin(); // For I2C
+  delay(10);
+  
   Serial.begin(9600); // Sets the data rate in bits per second (baud) for serial data transmission
   Serial.println("16 channel servo test!");
+
+  delay(10);
+  GY85.init();
+  delay(10);
   
   pwm.begin();
   pwm.setPWMFreq(60); // Analog servos run at ~60 Hz updates
@@ -68,94 +99,162 @@ void setup() {
 }
 
 void loop() {
+
+  // ================== Read IMU ==================
+  // Set time interval and timer
+  interval = micros() - timer; // time interval = current time - previous time
+  timer = micros(); // Set current time as previous time
+
+  double roll = read_roll();
+  double pitch = read_pitch();
+
+  Serial.print("pitch = ");
+  Serial.print(pitch);
+  Serial.print(", roll = ");
+  Serial.println(roll);
+  // ===============================================
+
   // Trotting
-//  int height = 100;
-//
-//  // Lift RF and LB
-//  set_leg(x+30, y+20, z+height, 0); // Right Front
-//  set_leg(x-50, y-20, z+height, 2); // Left Back
-//  // Orange Motors
-//  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-//  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-//  // Green Motors
-//  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-//  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-//  delay(200);
-//
-//  // Lower RF and LB
-//  set_leg(x+30, y+20, z, 0); // Right Front
-//  set_leg(x-50, y-20, z, 2); // Left Back
-//  // Orange Motors
-//  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-//  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-//  // Green Motors
-//  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-//  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-//  delay(200);
-//
-//  // Lift LF and RB
-//  set_leg(x+30, y-20, z+height, 1); // Left Front
-//  set_leg(x-50, y+20, z+height, 3); // Right Back
-//  // Orange Motors
-//  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-//  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-//  // Green Motors
-//  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-//  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
-//  delay(200);
-//
-//  // Lower LF and RB
-//  set_leg(x+30, y-20, z, 1); // Left Front
-//  set_leg(x-50, y+20, z, 3); // Right Back
-//  // Orange Motors
-//  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-//  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-//  // Green Motors
-//  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-//  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
-//  delay(200);
+  int height = 100;
 
-  int x_ft = 70;  // amplitude of swing
-  int z_lift = 50;  // amplitude of lifting foot
-                    // z increases along up direction
+  // Lift RF and LB
+  set_leg(x+30, y+20, z+height, 0); // Right Front
+  set_leg(x-50, y-20, z+height, 2); // Left Back
+  // Orange Motors
+  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+  // Green Motors
+  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+  delay(200);
+
+  // ================== Read IMU ==================
+  interval = micros() - timer; // time interval = current time - previous time
+  timer = micros(); // Set current time as previous time
+
+  roll = read_roll();
+  pitch = read_pitch();
+
+  Serial.print("pitch = ");
+  Serial.print(pitch);
+  Serial.print(", roll = ");
+  Serial.println(roll);
+  // ===============================================
+
+  // Lower RF and LB
+  set_leg(x+30, y+20, z, 0); // Right Front
+  set_leg(x-50, y-20, z, 2); // Left Back
+  // Orange Motors
+  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+  // Green Motors
+  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+  delay(200);
+
+  // ================== Read IMU ==================
+  interval = micros() - timer; // time interval = current time - previous time
+  timer = micros(); // Set current time as previous time
+
+  roll = read_roll();
+  pitch = read_pitch();
+
+  Serial.print("pitch = ");
+  Serial.print(pitch);
+  Serial.print(", roll = ");
+  Serial.println(roll);
+  // ===============================================
+
+  // Lift LF and RB
+  set_leg(x+30, y-20, z+height, 1); // Left Front
+  set_leg(x-50, y+20, z+height, 3); // Right Back
+  // Orange Motors
+  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+  // Green Motors
+  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
+  delay(200);
+
+  // ================== Read IMU ==================
+  interval = micros() - timer; // time interval = current time - previous time
+  timer = micros(); // Set current time as previous time
+
+  roll = read_roll();
+  pitch = read_pitch();
+
+  Serial.print("pitch = ");
+  Serial.print(pitch);
+  Serial.print(", roll = ");
+  Serial.println(roll);
+  // ===============================================
+
+  // Lower LF and RB
+  set_leg(x+30, y-20, z, 1); // Left Front
+  set_leg(x-50, y+20, z, 3); // Right Back
+  // Orange Motors
+  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+  // Green Motors
+  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
+  delay(200);
+
+  // ================== Read IMU ==================
+  interval = micros() - timer; // time interval = current time - previous time
+  timer = micros(); // Set current time as previous time
+
+  roll = read_roll();
+  pitch = read_pitch();
+
+  Serial.print("pitch = ");
+  Serial.print(pitch);
+  Serial.print(", roll = ");
+  Serial.println(roll);
+  // ===============================================
   
-  int t_flight = 200;
-  int t_land = 200;
-  set_leg(x+30+x_ft, y-20, z, 1);  // LF fore
-  set_leg(x-50+x_ft, y+20, z, 3);  // RB fore
-  set_leg(x+30-x_ft, y+20, z, 0);  // RF aft
-  set_leg(x-50-x_ft, y-20, z, 2);  // LB aft
-  move_motor();
-
-  // Save some time for flight phase
-  delay(t_flight);
-  // After flight phase, retrieve legs to support
-  set_leg(x+30, y-20, z-z_lift, 1); // LF landing
-  set_leg(x-50, y+20, z-z_lift, 3); // RB landing
-  set_leg(x+30, y+20, z       , 0); // RF moving
-  set_leg(x-50, y-20, z       , 2); // LB moving
-  move_motor();
-
-  // Landing phase
-  delay(t_land);
-
-  set_leg(x+30-x_ft, y-20, z, 1);  // LF aft
-  set_leg(x-50-x_ft, y+20, z, 3);  // RB aft
-  set_leg(x+30+x_ft, y+20, z, 0);  // RF fore
-  set_leg(x-50+x_ft, y-20, z, 2);  // LB fore
-  move_motor();
-
-  // Save some time for flight phase
-  delay(t_flight);
-  // After flight phase, retrieve legs to support
-  set_leg(x+30, y-20, z       , 1); // LF moving
-  set_leg(x-50, y+20, z       , 3); // RB moving
-  set_leg(x+30, y+20, z-z_lift, 0); // RF landing
-  set_leg(x-50, y-20, z-z_lift, 2); // LB landing
-  move_motor();
-
-  // Landing phase
-  delay(t_land);
+//
+//  int x_ft = 70;  // amplitude of swing
+//  int z_lift = 50;  // amplitude of lifting foot
+//                    // z increases along up direction
+//  
+//  int t_flight = 200;
+//  int t_land = 200;
+//  set_leg(x+30+x_ft, y-20, z, 1);  // LF fore
+//  set_leg(x-50+x_ft, y+20, z, 3);  // RB fore
+//  set_leg(x+30-x_ft, y+20, z, 0);  // RF aft
+//  set_leg(x-50-x_ft, y-20, z, 2);  // LB aft
+//  move_motor();
+//
+//  // Save some time for flight phase
+//  delay(t_flight);
+//  // After flight phase, retrieve legs to support
+//  set_leg(x+30, y-20, z-z_lift, 1); // LF landing
+//  set_leg(x-50, y+20, z-z_lift, 3); // RB landing
+//  set_leg(x+30, y+20, z       , 0); // RF moving
+//  set_leg(x-50, y-20, z       , 2); // LB moving
+//  move_motor();
+//
+//  // Landing phase
+//  delay(t_land);
+//
+//  set_leg(x+30-x_ft, y-20, z, 1);  // LF aft
+//  set_leg(x-50-x_ft, y+20, z, 3);  // RB aft
+//  set_leg(x+30+x_ft, y+20, z, 0);  // RF fore
+//  set_leg(x-50+x_ft, y-20, z, 2);  // LB fore
+//  move_motor();
+//
+//  // Save some time for flight phase
+//  delay(t_flight);
+//  // After flight phase, retrieve legs to support
+//  set_leg(x+30, y-20, z       , 1); // LF moving
+//  set_leg(x-50, y+20, z       , 3); // RB moving
+//  set_leg(x+30, y+20, z-z_lift, 0); // RF landing
+//  set_leg(x-50, y-20, z-z_lift, 2); // LB landing
+//  move_motor();
+//
+//  // Landing phase
+//  delay(t_land);
 
   
   
@@ -470,4 +569,43 @@ int angletoPWM(int ang, int servonum) {
     pulse = map(ang, 0, 180, 120, 640); // map the angle into the PWM
     
   return pulse;
+}
+
+double read_pitch() {
+
+  // Read accelerometer
+  double ax = GY85.accelerometer_x( GY85.readFromAccelerometer() ); // Acceleration in x direction
+  double az = GY85.accelerometer_z( GY85.readFromAccelerometer() ); // Acceleration in z direction
+
+  // Read gyroscope (rate of angular change)
+  float gx = GY85.gyro_x( GY85.readGyro() );
+
+  delta_angle = gx * (interval/1000000);
+  gyro_pitch += delta_angle;
+  
+  acce_pitch = 90 - abs((atan2(az, ax) * 180/PI));        // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
+
+  // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
+  filter_pitch = (acce_pitch + weight * gyro_pitch) / (1 + weight);
+
+  return filter_pitch;
+}
+
+double read_roll() {
+  // Read accelerometer
+  double ay = GY85.accelerometer_y( GY85.readFromAccelerometer() ); // Acceleration in y direction
+  double az = GY85.accelerometer_z( GY85.readFromAccelerometer() ); // Acceleration in z direction
+
+  // Read gyroscope (rate of angular change)
+  float gy = GY85.gyro_y( GY85.readGyro() );
+
+  delta_angle2 = gy * (interval/1000000);
+  gyro_roll += delta_angle2;
+  
+  acce_roll = -(90 - abs((atan2(az, ay) * 180/PI)));
+
+  // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
+  filter_roll = (acce_roll + weight * gyro_roll) / (1+ weight);
+
+  return filter_roll;
 }
