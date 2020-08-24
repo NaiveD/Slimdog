@@ -1,0 +1,7 @@
+{
+    "programmer": "AVRISP mkII",
+    "board": "arduino:avr:nano",
+    "configuration": "cpu=atmega328",
+    "port": "/dev/tty.usbserial-14340",
+    "sketch": "Raibert/osmo/osmo.ino"
+}
