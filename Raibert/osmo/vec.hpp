@@ -59,6 +59,8 @@ Vec3 rotateVec(Vec3 OP, double theta_x, double theta_y, double theta_z){
     double alpha_y = find_angle(cos_alpha_y, OP_xy.x);
     Vec3 OP_xyz;
     OP_xyz = Vec3(0.0, 0.0, OP_xy.z) + Vec3(sin(alpha_y+theta_z), cos(alpha_y+theta_z), 0.0) * Vec3(OP_xy.x, OP_xy.y, 0.0).norm();
+
+    return OP_xyz;
 }
 
 Vec3 freezeRF(Vec3 init_O_RF, Vec3 init_IK_RF, double cur_pitch, double cur_roll, double cur_yaw){

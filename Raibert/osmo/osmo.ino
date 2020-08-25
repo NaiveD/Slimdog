@@ -69,7 +69,7 @@ void loop(){
   Vec3 dynamic_IK_RF = freezeRF(Vec3(DOG_LENGTH/2, DOG_WIDTH/2, 0),
                                 Vec3(-20,-40,-420),
                                 att.pitch, att.roll, 0.0);
-  set_leg(angle, dynamic_IK_RF.x, dynamic_IK_RF.y, dynamic_IK_RF.z, 0);
+  set_leg(angle, dynamic_IK_RF, 0);
   move_motor(angle, &pwm);
   delay(100);
 }
