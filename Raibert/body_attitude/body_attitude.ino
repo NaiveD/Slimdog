@@ -1,6 +1,9 @@
 #include "GY_85.h" // IMU
 #include <Wire.h> // Used for I2C (IMU and PCA9685)
+#include <Adafruit_PWMServoDriver.h> // Used for the PCA9685
 
+// The pwm object
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 GY_85 GY85; // create the IMU object
 
 double interval; // time interval
@@ -24,6 +27,10 @@ double read_roll();
 double read_pitch();
 // ==========================================================
 
+float angle0 = 96.14, angle1 = 98.02, angle2 = 50.88, angle4 = 88.41, angle5 = 84.42, angle6 = 44.47, angle8 = 91.76, angle9 = 82.29, angle10 = 132.76, angle12 = 90.42, angle13 = 99.12, angle14 = 136.39;
+
+// Helper functions
+int angletoPWM(int ang);
 
 void setup() {
   // put your setup code here, to run once:
@@ -33,6 +40,29 @@ void setup() {
   delay(10);
   GY85.init();
   delay(10);
+  
+  Serial.println("Begin setting initial body attitude...");
+  
+  // Move the Yellow motors (1, 5, 9, 13)
+  pwm.setPWM(1, 0, angletoPWM(angle1, 1)); // RF
+  pwm.setPWM(5, 0, angletoPWM(angle5, 5)); // RB
+  pwm.setPWM(9, 0, angletoPWM(angle9, 9)); // LF
+  pwm.setPWM(13, 0, angletoPWM(angle13, 13)); // LB
+
+  // Move the Orange motors (2, 6, 10, 14)
+  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+
+  // Move the Green motors (0, 4, 8, 12)
+  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
+  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+
+  delay(5000);
+  Serial.println("Begin testing body attitude...");
 }
 
 void loop() {
@@ -49,9 +79,55 @@ void loop() {
   Serial.print(pitch);
   Serial.print(", roll = ");
   Serial.println(roll);
+
+  if (pitch > 45)
+    pitch = 45;
+
+  if (pitch < -45)
+    pitch = -45;
+
+  if (roll > 45)
+    roll = 45;
+
+  if (roll < -45)
+    roll = -45;
+    
+  // Control pitch (orange motors: 2, 6, 10, 14)
+  angle2 += pitch; // RF orange
+  angle6 += pitch; // RB orange
+  angle10 -= pitch; // LF orange
+  angle14 -= pitch; // LB orange
+  // Move the Orange motors (2, 6, 10, 14)
+  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB 
   
 
+  // Control roll (yellow motors: 1, 5, 9, 13)
+  angle1 += roll; // RF yellow
+  angle5 -= roll; // RB yellow
+  angle9 += roll; // LF yellow
+  angle13 -= roll; // LB yellow
+
+  // Move the Yellow motors (1, 5, 9, 13)
+  pwm.setPWM(1, 0, angletoPWM(angle1, 1)); // RF
+  pwm.setPWM(5, 0, angletoPWM(angle5, 5)); // RB
+  pwm.setPWM(9, 0, angletoPWM(angle9, 9)); // LF
+  pwm.setPWM(13, 0, angletoPWM(angle13, 13)); // LB
+
   delay(50);
+
+  // Reset motor angles
+  angle2 = 50.88;
+  angle6 = 44.47;
+  angle10 = 132.76;
+  angle14 = 136.39;
+
+  angle1 = 98.02;
+  angle5 = 84.42;
+  angle9 = 82.29;
+  angle13 = 99.12;
 }
 
 double read_pitch() {
@@ -91,4 +167,47 @@ double read_roll() {
   filter_roll = (acce_roll + weight * gyro_roll) / (1+ weight);
 
   return filter_roll;
+}
+
+// Convert angle to PWM
+int angletoPWM(int ang, int servonum) {
+  int pulse;
+  
+  if (servonum == 0)
+    pulse = map(ang, 0, 180, 135, 675); // map the angle into the PWM
+
+  else if (servonum == 1)
+    pulse = map(ang, 0, 180, 110, 680); // map the angle into the PWM
+
+  else if (servonum == 2)
+    pulse = map(ang, 0, 180, 180, 660); // map the angle into the PWM
+
+  else if (servonum == 4)
+    pulse = map(ang, 0, 180, 130, 670); // map the angle into the PWM
+
+  else if (servonum == 5)
+    pulse = map(ang, 0, 180, 95, 565); // map the angle into the PWM
+
+  else if (servonum == 6)
+    pulse = map(ang, 0, 180, 84, 636); // map the angle into the PWM
+
+  else if (servonum == 8)
+    pulse = map(ang, 0, 180, 80, 680); // map the angle into the PWM
+
+  else if (servonum == 9)
+    pulse = map(ang, 0, 180, 325, 805); // map the angle into the PWM
+
+  else if (servonum == 10)
+    pulse = map(ang, 0, 180, 150, 630); // map the angle into the PWM
+
+  else if (servonum == 12)
+    pulse = map(ang, 0, 180, 135, 655); // map the angle into the PWM
+
+  else if (servonum == 13)
+    pulse = map(ang, 0, 180, -50, 510); // map the angle into the PWM
+
+  else if (servonum == 14)
+    pulse = map(ang, 0, 180, 120, 640); // map the angle into the PWM
+    
+  return pulse;
 }

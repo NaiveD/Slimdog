@@ -93,7 +93,7 @@ void setup() {
   set_leg(x-20, y-40, z-20, 0); // Right Front
   set_leg(x-20, y+35, z, 1); // Left Front
   set_leg(x-50, y+45, z, 2); // Left Back
-  set_leg(x-60, y-20, z, 3); // Right Back
+  set_leg(x-40, y-20, z, 3); // Right Back
   
   move_motor();
   delay(10000);
