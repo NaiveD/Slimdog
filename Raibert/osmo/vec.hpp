@@ -66,10 +66,10 @@ Vec3 freezeRF(Vec3 init_O_RF, Vec3 init_IK_RF, double cur_pitch, double cur_roll
     double pitch = cur_pitch * PI / 180.0;
     double roll = -cur_roll * PI / 180.0;   // these two are adjusted for IK coordinate system
     // waiting to handle yaw
-    double yaw; // should be cur_yaw - init_yaw; positive when +y => +x => -y
+    double yaw = 0.0; // should be cur_yaw - init_yaw; positive when +y => +x => -y
     Vec3 rot_O_RF;
     rot_O_RF = rotateVec(init_O_RF, roll, pitch, yaw);
-    return O_RFfoot - rot_O_RF; // the new RF->RFfoot (IK for RF)
+    return rotateVec(O_RFfoot - rot_O_RF, -roll, -pitch, -yaw); // the new RF->RFfoot in rotated system(IK for RF)
 }
 
 double Vec3::norm(){
