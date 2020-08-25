@@ -90,128 +90,62 @@ void setup() {
   // Initial end point
   x = 0, y = 0, z = -400;
   
-  set_leg(x+30, y, z, 0); // Right Front
-  set_leg(x+30, y, z, 1); // Left Front
-  set_leg(x-50, y, z, 2); // Left Back
-  set_leg(x-50, y, z, 3); // Right Back
+  set_leg(x-20, y-40, z-20, 0); // Right Front
+  set_leg(x-20, y+35, z, 1); // Left Front
+  set_leg(x-50, y+45, z, 2); // Left Back
+  set_leg(x-60, y-20, z, 3); // Right Back
   
   move_motor();
+  delay(10000);
 }
 
 void loop() {
-
-  // ================== Read IMU ==================
-  // Set time interval and timer
-  interval = micros() - timer; // time interval = current time - previous time
-  timer = micros(); // Set current time as previous time
-
-  double roll = read_roll();
-  double pitch = read_pitch();
-
-  Serial.print("pitch = ");
-  Serial.print(pitch);
-  Serial.print(", roll = ");
-  Serial.println(roll);
-  // ===============================================
-
-  // Trotting
-  int height = 100;
-
-  // Lift RF and LB
-  set_leg(x+30, y+20, z+height, 0); // Right Front
-  set_leg(x-50, y-20, z+height, 2); // Left Back
-  // Orange Motors
-  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-  // Green Motors
-  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-  delay(200);
-
-  // ================== Read IMU ==================
-  interval = micros() - timer; // time interval = current time - previous time
-  timer = micros(); // Set current time as previous time
-
-  roll = read_roll();
-  pitch = read_pitch();
-
-  Serial.print("pitch = ");
-  Serial.print(pitch);
-  Serial.print(", roll = ");
-  Serial.println(roll);
-  // ===============================================
-
-  // Lower RF and LB
-  set_leg(x+30, y+20, z, 0); // Right Front
-  set_leg(x-50, y-20, z, 2); // Left Back
-  // Orange Motors
-  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-  // Green Motors
-  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-  delay(200);
-
-  // ================== Read IMU ==================
-  interval = micros() - timer; // time interval = current time - previous time
-  timer = micros(); // Set current time as previous time
-
-  roll = read_roll();
-  pitch = read_pitch();
-
-  Serial.print("pitch = ");
-  Serial.print(pitch);
-  Serial.print(", roll = ");
-  Serial.println(roll);
-  // ===============================================
-
-  // Lift LF and RB
-  set_leg(x+30, y-20, z+height, 1); // Left Front
-  set_leg(x-50, y+20, z+height, 3); // Right Back
-  // Orange Motors
-  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-  // Green Motors
-  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
-  delay(200);
-
-  // ================== Read IMU ==================
-  interval = micros() - timer; // time interval = current time - previous time
-  timer = micros(); // Set current time as previous time
-
-  roll = read_roll();
-  pitch = read_pitch();
-
-  Serial.print("pitch = ");
-  Serial.print(pitch);
-  Serial.print(", roll = ");
-  Serial.println(roll);
-  // ===============================================
-
-  // Lower LF and RB
-  set_leg(x+30, y-20, z, 1); // Left Front
-  set_leg(x-50, y+20, z, 3); // Right Back
-  // Orange Motors
-  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-  // Green Motors
-  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
-  delay(200);
-
-  // ================== Read IMU ==================
-  interval = micros() - timer; // time interval = current time - previous time
-  timer = micros(); // Set current time as previous time
-
-  roll = read_roll();
-  pitch = read_pitch();
-
-  Serial.print("pitch = ");
-  Serial.print(pitch);
-  Serial.print(", roll = ");
-  Serial.println(roll);
-  // ===============================================
+  // // Trotting
+//   int height = 100;
+//
+//   // Lift RF and LB
+//   set_leg(x-20, y-40, z-20+height, 0); // Right Front
+//   set_leg(x-50, y+45, z+height, 2); // Left Back
+//   // Orange Motors
+//   pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+//   pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+//   // Green Motors
+//   pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+//   pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+//   delay(180);
+//
+//   // Lower RF and LB
+//   set_leg(x-20, y-40, z-20, 0); // Right Front
+//   set_leg(x-50, y+45, z, 2); // Left Back
+//   // Orange Motors
+//   pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+//   pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+//   // Green Motors
+//   pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+//   pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+//   delay(180);
+//
+//   // Lift LF and RB
+//   set_leg(x, y+65, z+height, 1); // Left Front
+//   set_leg(x-60, y-20, z+height, 3); // Right Back
+//   // Orange Motors
+//   pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+//   pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+//   // Green Motors
+//   pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+//   pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
+//   delay(180);
+//
+//   // Lower LF and RB
+//   set_leg(x, y+65, z, 1); // Left Front // Left Front
+//   set_leg(x-60, y-20, z, 3); // Right Back
+//   // Orange Motors
+//   pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+//   pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+//   // Green Motors
+//   pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+//   pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
+//   delay(180);
   
 //
 //  int x_ft = 70;  // amplitude of swing
@@ -255,8 +189,6 @@ void loop() {
 //
 //  // Landing phase
 //  delay(t_land);
-
-  
   
 }
 
@@ -482,30 +414,30 @@ float set_leg(float x, float y, float z, int leg) {
 // Move all the 12 motors according to the calculated angles
 void move_motor() {
   
-//  Serial.print("angle0 = ");
-//  Serial.print(angle0);
-//  Serial.print(", angle1 = ");
-//  Serial.print(angle1);
-//  Serial.print(", angle2 = ");
-//  Serial.print(angle2);
-//  Serial.print(", angle4 = ");
-//  Serial.print(angle4);
-//  Serial.print(", angle5 = ");
-//  Serial.print(angle5);
-//  Serial.print(", angle6 = ");
-//  Serial.print(angle6);
-//  Serial.print(", angle8 = ");
-//  Serial.print(angle8);
-//  Serial.print(", angle9 = ");
-//  Serial.print(angle9);
-//  Serial.print(", angle10 = ");
-//  Serial.print(angle10);
-//  Serial.print(", angle12 = ");
-//  Serial.print(angle12);
-//  Serial.print(", angle13 = ");
-//  Serial.print(angle13);
-//  Serial.print(", angle14 = ");
-//  Serial.println(angle14);
+ Serial.print("angle0 = ");
+ Serial.print(angle0);
+ Serial.print(", angle1 = ");
+ Serial.print(angle1);
+ Serial.print(", angle2 = ");
+ Serial.print(angle2);
+ Serial.print(", angle4 = ");
+ Serial.print(angle4);
+ Serial.print(", angle5 = ");
+ Serial.print(angle5);
+ Serial.print(", angle6 = ");
+ Serial.print(angle6);
+ Serial.print(", angle8 = ");
+ Serial.print(angle8);
+ Serial.print(", angle9 = ");
+ Serial.print(angle9);
+ Serial.print(", angle10 = ");
+ Serial.print(angle10);
+ Serial.print(", angle12 = ");
+ Serial.print(angle12);
+ Serial.print(", angle13 = ");
+ Serial.print(angle13);
+ Serial.print(", angle14 = ");
+ Serial.println(angle14);
   
   // Move the Yellow motors (1, 5, 9, 13)
   pwm.setPWM(1, 0, angletoPWM(angle1, 1)); // RF
