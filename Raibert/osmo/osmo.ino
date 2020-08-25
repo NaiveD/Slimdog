@@ -1,12 +1,14 @@
 #include "GY_85.h"
 #include <Wire.h> // Used for I2C
 #include <Adafruit_PWMServoDriver.h> // Used for the PCA9685
+#include "vec.hpp"
+#include "IK.hpp"
 
 #define CLAMP(x, low, high) ((x) > (high) ? (high) : ((x) < (low) ? (low) : (x)))
 /****************** Declaration *********************/
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 GY_85 GY85;
-int angle[16];
+float angle[16];
 class Attitude{
 public:
     double pitch = 0;
@@ -48,36 +50,40 @@ void setup(){
   kp = 0.5;
   kv = 0.0;
 
-  move_motor(angle);
+  move_motor(angle, &pwm);
   delay(2000);
 }
 /****************** Loop *********************/
+// Attempt 1
+// void loop(){
+//   getAttitude(&GY85, &att);
+//   int diff_pitch = (int)(kp * att.pitch + kv * att.pitch_v);
+//   int diff_roll = (int)(kp * att.roll + kv * att.roll_v);
+
+//   // adjust pitch
+//   {
+//     angle[2] += diff_pitch;
+//     angle[6] += diff_pitch;
+//     angle[10] -= diff_pitch;
+//     angle[14] -= diff_pitch;
+//   }
+
+//   // adjust roll
+//   {
+//     angle[1] += diff_roll;
+//     angle[5] -= diff_roll;
+//     angle[9] += diff_roll;
+//     angle[13] -= diff_roll;
+//   }
+
+//   move_motor(angle);
+//   delay(250);
+// }
+
+// Attempt 2
 void loop(){
   getAttitude(&GY85, &att);
-  int diff_pitch = (int)(kp * att.pitch + kv * att.pitch_v);
-  int diff_roll = (int)(kp * att.roll + kv * att.roll_v);
-
-  // adjust pitch
-  {
-    angle[2] += diff_pitch;
-    angle[6] += diff_pitch;
-    angle[10] -= diff_pitch;
-    angle[14] -= diff_pitch;
-  }
-
-  // adjust roll
-  {
-    angle[1] += diff_roll;
-    angle[5] -= diff_roll;
-    angle[9] += diff_roll;
-    angle[13] -= diff_roll;
-  }
-
-  move_motor(angle);
-  delay(250);
 }
-
-
 /****************** Implementation *********************/
 void getAttitude(GY_85 *GY85, Attitude *att){
   double ax = GY85->accelerometer_x( GY85->readFromAccelerometer() ); // Acceleration in x direction
@@ -121,81 +127,3 @@ void getAttitude(GY_85 *GY85, Attitude *att){
   //delay(50);
 }
 
-// Convert angle to PWM
-int angletoPWM(int ang, int servonum) {
-  int pulse;
-  
-  if (servonum == 0)
-    pulse = map(ang, 0, 180, 135, 675); // map the angle into the PWM
-
-  else if (servonum == 1)
-    pulse = map(ang, 0, 180, 110, 680); // map the angle into the PWM
-
-  else if (servonum == 2)
-    pulse = map(ang, 0, 180, 180, 660); // map the angle into the PWM
-
-  else if (servonum == 4)
-    pulse = map(ang, 0, 180, 130, 670); // map the angle into the PWM
-
-  else if (servonum == 5)
-    pulse = map(ang, 0, 180, 95, 565); // map the angle into the PWM
-
-  else if (servonum == 6)
-    pulse = map(ang, 0, 180, 84, 636); // map the angle into the PWM
-
-  else if (servonum == 8)
-    pulse = map(ang, 0, 180, 80, 680); // map the angle into the PWM
-
-  else if (servonum == 9)
-    pulse = map(ang, 0, 180, 325, 805); // map the angle into the PWM
-
-  else if (servonum == 10)
-    pulse = map(ang, 0, 180, 150, 630); // map the angle into the PWM
-
-  else if (servonum == 12)
-    pulse = map(ang, 0, 180, 135, 655); // map the angle into the PWM
-
-  else if (servonum == 13)
-    pulse = map(ang, 0, 180, -50, 510); // map the angle into the PWM
-
-  else if (servonum == 14)
-    pulse = map(ang, 0, 180, 120, 640); // map the angle into the PWM
-    
-  return pulse;
-}
-
-void move_motor(int *angle){
-  // clamp the angle[]
-  {
-    angle[0] = CLAMP(angle[0], 30, 150);
-    angle[1] = CLAMP(angle[1], 6, 144);
-    angle[2] = CLAMP(angle[2], 9, 165);
-    angle[4] = CLAMP(angle[4], 30, 150);
-    angle[5] = CLAMP(angle[5], 6, 144);
-    angle[6] = CLAMP(angle[6], 9, 165);
-    angle[8] = CLAMP(angle[8], 18, 141);
-    angle[9] = CLAMP(angle[9], 0, 133);
-    angle[10] = CLAMP(angle[10], 0, 180);
-    angle[12] = CLAMP(angle[12], 9, 147);
-    angle[13] = CLAMP(angle[13], 68, 164);
-    angle[14] = CLAMP(angle[14], 11, 180);
-  }
-
-  // Move the Yellow motors (1, 5, 9, 13)
-  pwm.setPWM(1, 0, angletoPWM(angle[1], 1)); // RF
-  pwm.setPWM(5, 0, angletoPWM(angle[5], 5)); // RB
-  pwm.setPWM(9, 0, angletoPWM(angle[9], 9)); // LF
-  pwm.setPWM(13, 0, angletoPWM(angle[13], 13)); // LB
-
-  // Move the Orange motors (2, 6, 10, 14)
-  pwm.setPWM(2, 0, angletoPWM(angle[2], 2)); // RF
-  pwm.setPWM(6, 0, angletoPWM(angle[6], 6)); // RB
-  pwm.setPWM(10, 0, angletoPWM(angle[10], 10)); // LF
-  pwm.setPWM(14, 0, angletoPWM(angle[14], 14)); // LB
-
-  // Move the Green motors (0, 4, 8, 12)
-  pwm.setPWM(0, 0, angletoPWM(angle[0], 0)); // RF
-  pwm.setPWM(4, 0, angletoPWM(angle[4], 4)); // RB
-  pwm.setPWM(8, 0, angletoPWM(angle[8], 8)); // LF
-  pwm.setPWM(12, 0, angletoPWM(angle[12], 12)); // LB
-}
