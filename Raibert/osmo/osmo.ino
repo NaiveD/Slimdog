@@ -1,7 +1,6 @@
 #include "GY_85.h"
 #include <Wire.h> // Used for I2C
 #include <Adafruit_PWMServoDriver.h> // Used for the PCA9685
-#include "vec.hpp"
 #include "IK.hpp"
 #include "IMU.hpp"
 
