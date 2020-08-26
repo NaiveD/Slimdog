@@ -7,7 +7,7 @@ double interval; // time interval
 double timer = 0; // Previous time
 
 // ================== Variables for IMU =====================
-int weight = 30; // weight of complementary filter
+int weight = 80; // weight of complementary filter
 double gyro_roll = 0; // Roll angle calculated by gyroscope
 double acce_roll = 0; // Roll angle calculated by accelerometer
 double filter_roll = 0; // Roll angle after filtering
@@ -62,6 +62,7 @@ double read_pitch() {
 
   // Read gyroscope (rate of angular change)
   float gx = GY85.gyro_x( GY85.readGyro() );
+  // Serial.print("gx = ");
 
   delta_angle = gx * (interval/1000000);
   gyro_pitch += delta_angle;

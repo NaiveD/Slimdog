@@ -101,51 +101,51 @@ void setup() {
 
 void loop() {
   // // Trotting
-//   int height = 100;
-//
-//   // Lift RF and LB
-//   set_leg(x-20, y-40, z-20+height, 0); // Right Front
-//   set_leg(x-50, y+45, z+height, 2); // Left Back
-//   // Orange Motors
-//   pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-//   pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-//   // Green Motors
-//   pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-//   pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-//   delay(180);
-//
-//   // Lower RF and LB
-//   set_leg(x-20, y-40, z-20, 0); // Right Front
-//   set_leg(x-50, y+45, z, 2); // Left Back
-//   // Orange Motors
-//   pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-//   pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-//   // Green Motors
-//   pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-//   pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-//   delay(180);
-//
-//   // Lift LF and RB
-//   set_leg(x, y+65, z+height, 1); // Left Front
-//   set_leg(x-60, y-20, z+height, 3); // Right Back
-//   // Orange Motors
-//   pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-//   pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-//   // Green Motors
-//   pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-//   pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
-//   delay(180);
-//
-//   // Lower LF and RB
-//   set_leg(x, y+65, z, 1); // Left Front // Left Front
-//   set_leg(x-60, y-20, z, 3); // Right Back
-//   // Orange Motors
-//   pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-//   pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-//   // Green Motors
-//   pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-//   pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
-//   delay(180);
+   int height = 100;
+
+   // Lift RF and LB
+   set_leg(x-20, y-40, z-20+height, 0); // Right Front
+   set_leg(x-50, y+45, z+height, 2); // Left Back
+   // Orange Motors
+   pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+   pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+   // Green Motors
+   pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+   pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+   delay(180);
+
+   // Lower RF and LB
+   set_leg(x-20, y-40, z-20, 0); // Right Front
+   set_leg(x-50, y+45, z, 2); // Left Back
+   // Orange Motors
+   pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+   pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+   // Green Motors
+   pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+   pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+   delay(180);
+
+   // Lift LF and RB
+   set_leg(x, y+65, z+height, 1); // Left Front
+   set_leg(x-60, y-20, z+height, 3); // Right Back
+   // Orange Motors
+   pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+   pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+   // Green Motors
+   pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+   pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
+   delay(180);
+
+   // Lower LF and RB
+   set_leg(x, y+65, z, 1); // Left Front // Left Front
+   set_leg(x-60, y-20, z, 3); // Right Back
+   // Orange Motors
+   pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+   pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+   // Green Motors
+   pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+   pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
+   delay(180);
   
 //
 //  int x_ft = 70;  // amplitude of swing

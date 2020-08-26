@@ -1,22 +1,35 @@
+#include "GY_85.h" // IMU
 #include <Wire.h> // Used for I2C (IMU and PCA9685)
 #include <Adafruit_PWMServoDriver.h> // Used for the PCA9685
 
 // The pwm object
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+GY_85 GY85; // create the IMU object
 
-// Inverse Kiematics (IK) functions
-float servo1_solver(float x, float y, float z, int leg); // Yellow Servo
-float servo2_solver(float x, float y, float z, int leg, float servo1_angle); // Orange Servo
-float servo3_solver(float x, float y, float z, int leg); // Green Servo
+// Handle time
+long intervals[] = {50, 400, 400}; // Time intervals
+long last[] = {0, 5500, 5700}; // Previous time 
 
-// Set the leg to position (x, y, z)
-float set_leg(float x, float y, float z, int leg);
+// ================== Variables for IMU =====================
+double interval; // time interval
+double timer = 0; // Previous time
 
-// Move all the 12 motors according to the calculated angles
-void move_motor();
+int weight = 30; // weight of complementary filter
+double gyro_roll = 0; // Roll angle calculated by gyroscope
+double acce_roll = 0; // Roll angle calculated by accelerometer
+double filter_roll = 0; // Roll angle after filtering
+double delta_angle = 0; // Delta angle used to calculate gyro_roll
 
-// Helper functions
-int angletoPWM(int ang);
+double gyro_pitch = 0; // Roll angle calculated by gyroscope
+double acce_pitch = 0; // Roll angle calculated by accelerometer
+double filter_pitch = 0; // Roll angle after filtering
+double delta_angle2 = 0; // Delta angle used to calculate gyro_pitch
+// ==========================================================
+
+// ================== Functions for IMU =====================
+double read_roll();
+double read_pitch();
+// ==========================================================
 
 // Servo number
 //     G   Y   O   /
@@ -25,11 +38,11 @@ int angletoPWM(int ang);
 // LF: 8,  9,  10, 11
 // LB: 12, 13, 14, 15
 
-// The angle for the 12 servo motors
+// =================== Variables for IK =====================
+// The angles for the 12 servo motors
 float angle0, angle1, angle2, angle4, angle5, angle6, angle8, angle9, angle10, angle12, angle13, angle14;
 float x, y, z; // End point P(x, y, z)
-// int x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
-
+float xrf, yrf, zrf, xrb, yrb, zrb, xlf, ylf, zlf, xlb, ylb, zlb;
 /* ============= Constants ============== */
 // lengths (mm)
 float H = 266.0747;
@@ -48,77 +61,200 @@ float l4 = 12.45;
 float theta0 = 44.4674;
 float theta1 = 43.4193;
 /* ====================================== */
+// ==========================================================
 
+// =================== Functions for IK =====================
+// Inverse Kiematics (IK) functions
+float servo1_solver(float x, float y, float z, int leg); // Yellow Servo
+float servo2_solver(float x, float y, float z, int leg, float servo1_angle); // Orange Servo
+float servo3_solver(float x, float y, float z, int leg); // Green Servo
+
+// Set the leg to position (x, y, z)
+float set_leg(float x, float y, float z, int leg);
+
+// Move all the 12 motors according to the calculated angles
+void move_motor();
+
+// Helper functions
+int angletoPWM(int ang);
+// ==========================================================
+
+/* ===================== Parameters ======================= */
+int height = 100;  // x0: the lifted height of the legs 
+int angleO1 = 0; // x1: angle of the Orange motors of RF/LB during stance
+int angleY1 = 0; // x2: angle of the Yellow motors of RF/LB during stance
+int angleO2 = 0; // x3: angle of the Orange motors of LF/RB during stance
+int angleY2 = 0; // x4: angle of the Yellow motors of LF/RB during stance
+// int forwardDistance = 0; // x5: The forward distance of the legs during flight phase
+/* ======================================================== */
+
+// Main body
 void setup() {
-  Serial.begin(9600); // Sets the data rate in bits per second (baud) for serial data transmission
-  Serial.println("16 channel servo test!");
+  Wire.begin(); // For I2C
+  delay(10);
   
-  pwm.begin();
+  Serial.begin(9600); // For serial data transmission
+  Serial.println("16 channel servo test!");
+  delay(10);
+
+  GY85.init(); // For IMU
+  delay(10);
+  
+  pwm.begin(); // For PWM
   pwm.setPWMFreq(60); // Analog servos run at ~60 Hz updates
 
-  // Initial end point
-  x = 0, y = 0, z = -450;
+  // Set initial position
+  Serial.println("Begin setting initial position...");
+  // x = 0, y = 0, z = -420;
+  xrf = -20, yrf = -40, zrf = -420;
+  xrb = -40, yrb = -20, zrb = -400;
+  xlf = -20, ylf = 35, zlf = -400;
+  xlb = -50, ylb = 0, zlb = -400;
   
-  set_leg(x+30, y, z, 0); // Right Front
-  set_leg(x+30, y, z, 1); // Left Front
-  set_leg(x-50, y, z, 2); // Left Back
-  set_leg(x-50, y, z, 3); // Right Back
+  height = 100; // (Possible parameter x0)
   
+  set_leg(xrf, yrf, zrf, 0); // Right Front
+  set_leg(xlf, ylf, zlf, 1); // Left Front
+  set_leg(xlb, ylb, zlb, 2); // Left Back
+  set_leg(xrb, yrb, zrb, 3); // Right Back  
   move_motor();
 
   delay(5000);
+  Serial.println("Begin testing...");
 }
 
+// Trotting gait loop
 void loop() {
-  // Trotting
-  int height = 100;
-
-  // Lift RF and LB
-  set_leg(x+30, y+20, z+height, 0); // Right Front
-  set_leg(x-50, y-20, z+height, 2); // Left Back
-  // Orange Motors
-  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-  // Green Motors
-  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-
-  delay(150);
+  long now = millis(); // Get current time
   
+  // Read IMU data
+  if (now - last[0] >= intervals[0])
+  {
+    last[0] = now;
 
-  // Lower RF and LB
-  set_leg(x+30, y+20, z, 0); // Right Front
-  set_leg(x-50, y-20, z, 2); // Left Back
-  // Orange Motors
-  pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
-  pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
-  // Green Motors
-  pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
-  pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
-  delay(150);
+    interval = micros() - timer;
+    timer = micros();
+    
+    // Read roll and pitch from IMU
+    filter_roll = read_roll();
+    filter_pitch = read_pitch();
 
-  // Lift LF and RB
-  set_leg(x+30, y-20, z+height, 1); // Left Front
-  set_leg(x-50, y+20, z+height, 3); // Right Back
-  // Orange Motors
-  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-  // Green Motors
-  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
-  delay(150);
+    // Serial.print("pitch = ");
+    // Serial.print(filter_pitch);
+    // Serial.print(", roll = ");
+    // Serial.println(filter_roll);
+  }
 
-  // Lower LF and RB
-  set_leg(x+30, y-20, z, 1); // Left Front
-  set_leg(x-50, y+20, z, 3); // Right Back
-  // Orange Motors
-  pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
-  pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
-  // Green Motors
-  pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
-  pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
-  delay(150);
+  // Trotting Phase 1
+  // Phase 1 (180 ms)
+  // RF/LB during flight, LF/RB during stance
+  // LF/RB should lower, RF/LB should lift
+  // LF/RB should rotate the Orange and Yellow motors to adjust the body attitude
+  if (now - last[1] >= intervals[1])
+  {
+//    Serial.print("In phase1: now = ");
+//    Serial.print(now);
+//    Serial.print(", last[1] = ");
+//    Serial.print(last[1]);
+//    Serial.print(", now - last[1] = ");
+//    Serial.println(now - last[1]);
+    
+    last[1] = now;
+
+    // Lower LF/RB
+    set_leg(xlf, ylf, zlf, 1); // Left Front
+    set_leg(xrb, yrb, zrb, 3); // Right Back
+    // Orange Motors
+    pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+    pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+    // Green Motors
+    pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+    pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
+
+    // Lift RF/LB
+    set_leg(xrf, yrf, zrf + height, 0); // Right Front
+    set_leg(xlb, ylb, zlb + height, 2); // Left Back
+    // Orange Motors
+    pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+    pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+    // Green Motors
+    pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+    pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+    // Yellow Motors
+    pwm.setPWM(1, 0, angletoPWM(angle1, 1)); // RF
+    pwm.setPWM(13, 0, angletoPWM(angle13, 13)); // LB
+
+    // Adjust body attitude with LF/RB 
+    // Need to use IMU data here
+    Serial.print("In phase1: ");
+    Serial.print("pitch = ");
+    Serial.print(filter_pitch);
+    Serial.print(", roll = ");
+    Serial.println(filter_roll);
+
+    // // Rotate Yellow motors
+    // pwm.setPWM(5, 0, angletoPWM(angle5-angleY2, 5)); // RB
+    // pwm.setPWM(9, 0, angletoPWM(angle9+angleY2, 9)); // LF;
+    // // Rotate Orange motors
+    // pwm.setPWM(6, 0, angletoPWM(angle5-angleO2, 6)); // RB
+    // pwm.setPWM(10, 0, angletoPWM(angle9+angleO2, 10)); // LF;
+  }
+
+  // Trotting Phase 2
+  // Phase 2 (180 ms)
+  // RF/LB during stance, LF/RB during flight
+  // RF/LB should lower, LF/RB should lift
+  // RF/LB should rotate the Orange and Yellow motors to adjust the body attitude   
+  if (now - last[2] >= intervals[2])
+  {
+//    Serial.print("In phase2: now = ");
+//    Serial.print(now);
+//    Serial.print(", last[2] = ");
+//    Serial.print(last[2]);
+//    Serial.print(", now - last[2] = ");
+//    Serial.println(now - last[2]);
+    last[2] = now; 
+
+    // Lower RF/LB
+    set_leg(xrf, yrf, zrf, 0); // Right Front
+    set_leg(xlb, ylb, zlb, 2); // Left Back
+    // Orange Motors
+    pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+    pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+    // Green Motors
+    pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+    pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+
+    // Lift LF/RB
+    set_leg(xlf, ylf, zlf + height, 1); // Left Front
+    set_leg(xrb, yrb, zrb + height, 3); // Right Back
+    // Orange Motors
+    pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+    pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+    // Green Motors
+    pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+    pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
+    // Yellow Motors
+    pwm.setPWM(5, 0, angletoPWM(angle5, 5)); // RB
+    pwm.setPWM(9, 0, angletoPWM(angle9, 9)); // LF
+
+    // Adjust body attitude with LF/RB 
+    // Need to use IMU data here
+    Serial.print("In phase2: ");
+    Serial.print("pitch = ");
+    Serial.print(filter_pitch);
+    Serial.print(", roll = ");
+    Serial.println(filter_roll);
+
+    // // Rotate Yellow motors
+    // pwm.setPWM(1, 0, angletoPWM(angle5-angleY2, 1)); // RF
+    // pwm.setPWM(13, 0, angletoPWM(angle9+angleY2, 13)); // LB
+    // // Rotate Orange motors
+    // pwm.setPWM(2, 0, angletoPWM(angle5-angleO2, 2)); // RF
+    // pwm.setPWM(14, 0, angletoPWM(angle9+angleO2, 14)); // LB;
+  }
 }
+
 
 /* ================ IK functions ================ */
 // the yellow servo
@@ -386,8 +522,6 @@ void move_motor() {
   pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
 }
 
-/* ================================================ */
-
 // Convert angle to PWM
 int angletoPWM(int ang, int servonum) {
   int pulse;
@@ -430,3 +564,46 @@ int angletoPWM(int ang, int servonum) {
     
   return pulse;
 }
+
+/* ================================================ */
+
+/* ================ IMU functions ================ */
+double read_pitch() {
+
+  // Read accelerometer
+  double ax = GY85.accelerometer_x( GY85.readFromAccelerometer() ); // Acceleration in x direction
+  double az = GY85.accelerometer_z( GY85.readFromAccelerometer() ); // Acceleration in z direction
+
+  // Read gyroscope (rate of angular change)
+  float gx = GY85.gyro_x( GY85.readGyro() );
+
+  delta_angle = gx * (interval/1000000);
+  gyro_pitch += delta_angle;
+  
+  acce_pitch = 90 - abs((atan2(az, ax) * 180/PI));        // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
+
+  // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
+  filter_pitch = (acce_pitch + weight * gyro_pitch) / (1 + weight);
+
+  return filter_pitch;
+}
+
+double read_roll() {
+  // Read accelerometer
+  double ay = GY85.accelerometer_y( GY85.readFromAccelerometer() ); // Acceleration in y direction
+  double az = GY85.accelerometer_z( GY85.readFromAccelerometer() ); // Acceleration in z direction
+
+  // Read gyroscope (rate of angular change)
+  float gy = GY85.gyro_y( GY85.readGyro() );
+
+  delta_angle2 = gy * (interval/1000000);
+  gyro_roll += delta_angle2;
+  
+  acce_roll = -(90 - abs((atan2(az, ay) * 180/PI)));
+
+  // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
+  filter_roll = (acce_roll + weight * gyro_roll) / (1+ weight);
+
+  return filter_roll;
+}
+/* ================================================ */
