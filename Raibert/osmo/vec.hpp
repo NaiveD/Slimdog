@@ -59,6 +59,8 @@ Vec3 rotateVec(Vec3 OP, double theta_x, double theta_y, double theta_z){
     double alpha_y = find_angle(cos_alpha_y, OP_xy.x);
     Vec3 OP_xyz;
     OP_xyz = Vec3(0.0, 0.0, OP_xy.z) + Vec3(sin(alpha_y+theta_z), cos(alpha_y+theta_z), 0.0) * Vec3(OP_xy.x, OP_xy.y, 0.0).norm();
+
+    return OP_xyz;
 }
 
 Vec3 freezeRF(Vec3 init_O_RF, Vec3 init_IK_RF, double cur_pitch, double cur_roll, double cur_yaw){
@@ -66,10 +68,10 @@ Vec3 freezeRF(Vec3 init_O_RF, Vec3 init_IK_RF, double cur_pitch, double cur_roll
     double pitch = cur_pitch * PI / 180.0;
     double roll = -cur_roll * PI / 180.0;   // these two are adjusted for IK coordinate system
     // waiting to handle yaw
-    double yaw; // should be cur_yaw - init_yaw; positive when +y => +x => -y
+    double yaw = 0.0; // should be cur_yaw - init_yaw; positive when +y => +x => -y
     Vec3 rot_O_RF;
     rot_O_RF = rotateVec(init_O_RF, roll, pitch, yaw);
-    return O_RFfoot - rot_O_RF; // the new RF->RFfoot (IK for RF)
+    return rotateVec(O_RFfoot - rot_O_RF, -roll, -pitch, -yaw); // the new RF->RFfoot in rotated system(IK for RF)
 }
 
 double Vec3::norm(){

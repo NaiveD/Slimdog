@@ -1,4 +1,5 @@
 #include <Wire.h> // Used for I2C
+#include "vec.hpp"
 #include <Adafruit_PWMServoDriver.h> // Used for the PCA9685
 #define CLAMP(x, low, high) ((x) > (high) ? (high) : ((x) < (low) ? (low) : (x)))
 
@@ -25,6 +26,7 @@ float servo1_solver(float x, float y, float z, int leg);
 float servo2_solver(float x, float y, float z, int leg, float servo1_angle);
 float servo3_solver(float x, float y, float z, int leg);
 void set_leg(float *angle, float x, float y, float z, int leg);
+void set_leg(float *angle, Vec3 v, int leg);
 void move_motor(float *angle, Adafruit_PWMServoDriver *pwm);
 int angletoPWM(float ang, int servonum);
 
@@ -248,6 +250,9 @@ void set_leg(float *angle, float x, float y, float z, int leg) {
     return;
   }
   return;
+}
+void set_leg(float *angle, Vec3 v, int leg){
+  set_leg(angle, v.x, v.y, v.z, leg);
 }
 
 // Move all the 12 motors according to the calculated angles
