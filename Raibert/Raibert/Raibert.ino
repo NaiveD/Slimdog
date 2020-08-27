@@ -7,8 +7,8 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 GY_85 GY85; // create the IMU object
 
 // Handle time
- long intervals[] = {50, 800, 800}; // Time intervals
- long last[] = {0, 5500, 5900}; // Previous time 
+ long intervals[] = {50, 400, 400}; // Time intervals
+ long last[] = {0, 5500, 5700}; // Previous time 
 
 //long intervals[] = {50, 4000, 4000}; // Time intervals
 //long last[] = {0, 1500, 3500}; // Previous time 
@@ -17,7 +17,7 @@ GY_85 GY85; // create the IMU object
 double interval; // time interval
 double timer = 0; // Previous time
 
-int weight = 30; // weight of complementary filter
+int weight = 20; // weight of complementary filter
 double gyro_roll = 0; // Roll angle calculated by gyroscope
 double acce_roll = 0; // Roll angle calculated by accelerometer
 double filter_roll = 0; // Roll angle after filtering
@@ -109,10 +109,10 @@ void setup() {
   // Set initial position
   Serial.println("Begin setting initial position...");
   // x = 0, y = 0, z = -420;
-  xrf = 80, yrf = -40, zrf = -450;
-  xrb = -40, yrb = -20, zrb = -440;
-  xlf = 80, ylf = 35, zlf = -440;
-  xlb = -50, ylb = 0, zlb = -440;
+  xrf = 80, yrf = -40, zrf = -410;
+  xrb = -40, yrb = -20, zrb = -400;
+  xlf = 80, ylf = 35, zlf = -400;
+  xlb = -50, ylb = 0, zlb = -400;
   
   set_leg(xrf, yrf, zrf, 0); // Right Front
   set_leg(xlf, ylf, zlf, 1); // Left Front
@@ -193,28 +193,15 @@ void loop() {
     Serial.print(", roll = ");
     Serial.println(filter_roll);
 
-//    angleY2 = filter_roll;
-//    angleO2 = filter_pitch;
+    // angleY2 = filter_roll;
+    // angleO2 = filter_pitch;
 
-    angleY2 = filter_roll;
-    angleO2 = 0;
-
-    if (angleY2 > 40)
-      angleY2 = 40;
-    if (angleY2 < -40)
-      angleY2 = -40;
-    if (angleO2 > 40)
-      angleO2 = 40;
-    if (angleO2 < -40)
-      angleO2 = -40; 
-    delay(50);
-    // Rotate Yellow motors
-    pwm.setPWM(5, 0, angletoPWM(angle5-angleY2/10, 5)); // RB
-    pwm.setPWM(9, 0, angletoPWM(angle9+angleY2/10, 9)); // LF;
-    // Rotate Orange motors
-    pwm.setPWM(6, 0, angletoPWM(angle6+angleO2/10, 6)); // RB
-    pwm.setPWM(10, 0, angletoPWM(angle10-angleO2/10, 10)); // LF;
-    delay(50);
+    // // Rotate Yellow motors
+    // pwm.setPWM(5, 0, angletoPWM(angle5-angleY2, 5)); // RB
+    // pwm.setPWM(9, 0, angletoPWM(angle9+angleY2, 9)); // LF;
+    // // Rotate Orange motors
+    // pwm.setPWM(6, 0, angletoPWM(angle6+angleO2, 6)); // RB
+    // pwm.setPWM(10, 0, angletoPWM(angle10-angleO2, 10)); // LF;
   }
 
   // Trotting Phase 2
@@ -263,28 +250,15 @@ void loop() {
     Serial.print(", roll = ");
     Serial.println(filter_roll);
 
-//    angleY1 = filter_roll;
-//    angleO1 = filter_pitch;
-
-    angleY1 = filter_roll;
-    angleO1 = 0;
-    if (angleY1 > 40)
-      angleY1 = 40;
-    if (angleY1 < -40)
-      angleY1 = -40;
-    if (angleO1 > 40)
-      angleO1 = 40;
-    if (angleO1 < -40)
-      angleO1 = -40;  
-
-    delay(50);
-    // Rotate Yellow motors
-    pwm.setPWM(1, 0, angletoPWM(angle1+angleY1/10, 1)); // RF
-    pwm.setPWM(13, 0, angletoPWM(angle13-angleY1/10, 13)); // LB
-    // Rotate Orange motors
-    pwm.setPWM(2, 0, angletoPWM(angle2+angleO1/10, 2)); // RF
-    pwm.setPWM(14, 0, angletoPWM(angle14-angleO1/10, 14)); // LB;
-    delay(50);
+    // angleY1 = filter_roll;
+    // angleO1 = filter_pitch;
+    
+    // // Rotate Yellow motors
+    // pwm.setPWM(1, 0, angletoPWM(angle1+angleY1/4, 1)); // RF
+    // pwm.setPWM(13, 0, angletoPWM(angle13-angleY1/4, 13)); // LB
+    // // Rotate Orange motors
+    // pwm.setPWM(2, 0, angletoPWM(angle2+angleO1/4, 2)); // RF
+    // pwm.setPWM(14, 0, angletoPWM(angle14-angleO1/4, 14)); // LB;
   }
 }
 
