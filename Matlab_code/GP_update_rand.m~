@@ -41,11 +41,16 @@ mode = 'Matern'; % Matérn kernel function
 % Initialization
 % Set start values
 v = {};
-v{1} = [25 50 75 100 125];   % x0 - hopping height
-v{2} = [0.40 0.45 0.50 0.55 0.60];   % x1 - gain kp for controlling pitch (Orange motors)
-v{3} = [0.00 0.05 0.10 0.15 0.20];   % x2 - gain kv for controlling pitch (Orange motors)
-v{4} = [0.40 0.45 0.50 0.55 0.60];   % x3 - gain kp for controlling roll (Yellow motors)
-v{5} = [0.00 0.05 0.10 0.15 0.20];   % x4 - gain kv for controlling roll (Yellow motors)
+v{1} = [50 75 100];   % x0 - hopping height
+v{2} = [0 50 100 150];   % x1 - gain kp for controlling pitch (Orange motors)
+v{3} = [50 55 60 65];   % gain kv for controlling pitch (Orange motors)
+v{4} = [60 65 70 75];   % a2, a3
+v{5} = [25 30 35 40];   % a5, a8
+v{6} = [20 25 30 35];   % a6, a7
+v{7} = [-90 0 90 180];  % r1, r4
+v{8} = [-90 0 90 180];  % r2, r3
+v{9} = [-90 0 90 180];  % r5, r7
+v{10} = [-90 0 90 180]; % r6, r8
 
 dimension = length(v); % 10
 choice = length(v{1}); % 4
@@ -81,8 +86,9 @@ end
 time = datestr(now,30);
 location = [time, '.csv'];
 fid = fopen(location, 'a');
-fprintf(fid, '%s, %s, %s, %s, %s, %s, %s\n',...
-    'Iterations', 'x0', 'x1', 'x2', 'x3', 'x4','Fitness');
+fprintf(fid, '%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n',...
+    'Iterations', 'x1-x4', 'x5-x8', 'a1/a4', 'a2/a3', 'a5/a8',...
+    'a6/a7', 'r1/r4', 'r2/r3', 'r5/r7', 'r6/r8', 'Fitness');
 fclose(fid);
 
 % Plot initial GP
@@ -91,15 +97,17 @@ fclose(fid);
 % Iterate (50 interations)
 for i = 1:50
     % Get input from user (Do experiment and get the result yAdd)
-    str = '%dth iteration:[%0.2f,%0.2f,%0.2f,%0.2f,%0.2f]?';
-    yAdd = input(sprintf(str,i,x(1,end),x(2,end),x(3,end),x(4,end),x(5,end)));
+    str = '%dth iteration:[%0.0f,%0.0f,%0.0f,%0.0f,%0.0f,%0.0f,%0.0f,%0.0f,%0.0f,%0.0f]? ';
+    yAdd = input(sprintf(str,i,x(1,end),x(2,end),x(3,end),x(4,end),x(5,end),...
+        x(6,end),x(7,end),x(8,end),x(9,end),x(10,end)));
     y = [y yAdd];
     sigmaN = input('What is the measurement uncertainty? ');                % what is this???
     measurementNoise = [measurementNoise sigmaN];
     % Write it in the csv
     fid = fopen(location, 'a');
-    fprintf(fid, '%d, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f\n',...
-    i,x(1,end),x(2,end),x(3,end),x(4,end),x(5,end), yAdd);
+    fprintf(fid, '%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d\n',...
+    i,x(1,end),x(2,end),x(3,end),x(4,end),x(5,end),...
+    x(6,end),x(7,end),x(8,end),x(9,end),x(10,end), yAdd);
     fclose(fid);
     
        
@@ -124,7 +132,7 @@ for i = 1:50
             k(l) = SEcov(xtot(:,j),x(:,l),sigmaSE,lScale,mode);
         end
         mu(j) = k/K*y';
-        s(j) = SEcov(ones(5,1),ones(5,1),sigmaSE,lScale,mode)-k/K*k';
+        s(j) = SEcov(ones(10,1),ones(10,1),sigmaSE,lScale,mode)-k/K*k';
     end
     
     % Get next set of parameters

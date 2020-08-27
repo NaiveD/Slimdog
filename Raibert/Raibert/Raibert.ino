@@ -7,8 +7,8 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 GY_85 GY85; // create the IMU object
 
 // Handle time
- long intervals[] = {50, 400, 400}; // Time intervals
- long last[] = {0, 5500, 5700}; // Previous time 
+long intervals[] = {50, 400, 400}; // Time intervals
+long last[] = {0, 5500, 5700}; // Previous time 
 
 //long intervals[] = {50, 4000, 4000}; // Time intervals
 //long last[] = {0, 1500, 3500}; // Previous time 
@@ -83,12 +83,25 @@ int angletoPWM(int ang);
 // ==========================================================
 
 /* ===================== Parameters ======================= */
-int height = 60;  // x0: the lifted height of the legs 
-int angleO1 = 0; // x1: angle of the Orange motors of RF/LB during stance
-int angleY1 = 0; // x2: angle of the Yellow motors of RF/LB during stance
-int angleO2 = 0; // x3: angle of the Orange motors of LF/RB during stance
-int angleY2 = 0; // x4: angle of the Yellow motors of LF/RB during stance
-// int forwardDistance = 0; // x5: The forward distance of the legs during flight phase
+int x0 = 100; // x0: the lifted height of the legs 
+int x1 = 0.55;  // x1: gain kp for controlling pitch (Orange motors)
+int x2 = 0.00;  // x2: gain kv for controlling pitch (Orange motors)
+int x3 = 0.45;  // x3: gain kp for controlling roll (Yellow motors)
+int x4 = 0.15;  // x4: gain kv for controlling roll (Yellow motors)
+// int x5 = 0; // x5: The forward distance of the legs during flight phase
+
+int height = x0;  
+int angleO1; // angle of the Orange motors of RF/LB during stance
+int angleY1; // angle of the Yellow motors of RF/LB during stance
+int angleO2; // angle of the Orange motors of LF/RB during stance
+int angleY2; // angle of the Yellow motors of LF/RB during stance
+// int forwardDistance = x5; 
+
+double objective_function = 0;
+double sum_roll = 0;
+double sum_pitch = 0;
+double counter = 0;
+int time_limit = 30000;
 /* ======================================================== */
 
 // Main body
@@ -127,7 +140,8 @@ void setup() {
 // Trotting gait loop
 void loop() {
   long now = millis(); // Get current time
-  
+  if (now <= time_limit)
+  {
   // Read IMU data
   if (now - last[0] >= intervals[0])
   {
@@ -139,7 +153,6 @@ void loop() {
     // Read roll and pitch from IMU
     filter_roll = read_roll();
     filter_pitch = read_pitch();
-
     // Serial.print("pitch = ");
     // Serial.print(filter_pitch);
     // Serial.print(", roll = ");
@@ -193,15 +206,18 @@ void loop() {
     Serial.print(", roll = ");
     Serial.println(filter_roll);
 
-    // angleY2 = filter_roll;
-    // angleO2 = filter_pitch;
+    float roll_velocity = GY85.gyro_y( GY85.readGyro() ); // Roll: gyro_y
+    float pitch_velocity = GY85.gyro_x( GY85.readGyro() ); // Pitch: gyro_x
 
-    // // Rotate Yellow motors
-    // pwm.setPWM(5, 0, angletoPWM(angle5-angleY2, 5)); // RB
-    // pwm.setPWM(9, 0, angletoPWM(angle9+angleY2, 9)); // LF;
-    // // Rotate Orange motors
-    // pwm.setPWM(6, 0, angletoPWM(angle6+angleO2, 6)); // RB
-    // pwm.setPWM(10, 0, angletoPWM(angle10-angleO2, 10)); // LF;
+    angleY2 = -x3 * (filter_roll - 0) - x4 * (roll_velocity);
+    angleO2 = -x1 * (filter_pitch - 0) - x2 * (pitch_velocity);
+
+    // Rotate Yellow motors
+    pwm.setPWM(5, 0, angletoPWM(angle5-angleY2, 5)); // RB
+    pwm.setPWM(9, 0, angletoPWM(angle9+angleY2, 9)); // LF;
+    // Rotate Orange motors
+    pwm.setPWM(6, 0, angletoPWM(angle6+angleO2, 6)); // RB
+    pwm.setPWM(10, 0, angletoPWM(angle10-angleO2, 10)); // LF;
   }
 
   // Trotting Phase 2
@@ -250,15 +266,33 @@ void loop() {
     Serial.print(", roll = ");
     Serial.println(filter_roll);
 
-    // angleY1 = filter_roll;
-    // angleO1 = filter_pitch;
+    float roll_velocity = GY85.gyro_y( GY85.readGyro() ); // Roll: gyro_y
+    float pitch_velocity = GY85.gyro_x( GY85.readGyro() ); // Pitch: gyro_x
+
+    angleY1 = - (-x3 * (filter_roll - 0) - x4 * (roll_velocity) );
+    angleO1 = - (-x1 * (filter_pitch - 0) - x2 * (pitch_velocity) );
     
-    // // Rotate Yellow motors
-    // pwm.setPWM(1, 0, angletoPWM(angle1+angleY1/4, 1)); // RF
-    // pwm.setPWM(13, 0, angletoPWM(angle13-angleY1/4, 13)); // LB
-    // // Rotate Orange motors
-    // pwm.setPWM(2, 0, angletoPWM(angle2+angleO1/4, 2)); // RF
-    // pwm.setPWM(14, 0, angletoPWM(angle14-angleO1/4, 14)); // LB;
+    // Rotate Yellow motors
+    pwm.setPWM(1, 0, angletoPWM(angle1+angleY1, 1)); // RF
+    pwm.setPWM(13, 0, angletoPWM(angle13-angleY1, 13)); // LB
+    // Rotate Orange motors
+    pwm.setPWM(2, 0, angletoPWM(angle2+angleO1, 2)); // RF
+    pwm.setPWM(14, 0, angletoPWM(angle14-angleO1, 14)); // LB;
+
+    sum_roll += abs(filter_roll);
+    sum_pitch += abs(filter_pitch);
+    counter += 1;
+    objective_function = 100 - 4 * (0.5 * sum_roll/counter + 0.5 * sum_pitch/counter);
+
+    Serial.print(", objective_function = ");
+    Serial.println(objective_function);
+  }
+  }
+  else
+  {
+    Serial.print(", objective_function = ");
+    Serial.println(objective_function);
+    delay(1000000);
   }
 }
 

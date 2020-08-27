@@ -24,6 +24,10 @@ double read_roll();
 double read_pitch();
 // ==========================================================
 
+double objective_function = 0;
+double sum_roll = 0;
+double sum_pitch = 0;
+double counter = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -45,11 +49,21 @@ void loop() {
   double roll = read_roll();
   double pitch = read_pitch();
 
-  Serial.print("pitch = ");
-  Serial.print(pitch);
-  Serial.print(", roll = ");
-  Serial.println(roll);
-  
+  sum_roll += abs(roll);
+  sum_pitch += abs(pitch);
+  counter += 1;
+  objective_function = 100 - 4*(0.5 * (sum_roll/counter) + 0.5 * (sum_pitch/counter));
+
+//  Serial.print("pitch = ");
+//  Serial.print(pitch);
+//  Serial.print(", roll = ");
+//  Serial.print(roll);
+//  Serial.print(", averaged pitch = ");
+//  Serial.print(sum_pitch/counter);
+//  Serial.print(", averaged roll = ");
+//  Serial.print(sum_roll/counter);
+//  Serial.print(", objective_function = ");
+//  Serial.println(objective_function);
 
   delay(50);
 }
@@ -62,7 +76,8 @@ double read_pitch() {
 
   // Read gyroscope (rate of angular change)
   float gx = GY85.gyro_x( GY85.readGyro() );
-  // Serial.print("gx = ");
+  Serial.print(", gx = ");
+  Serial.println(gx);
 
   delta_angle = gx * (interval/1000000);
   gyro_pitch += delta_angle;
@@ -84,6 +99,9 @@ double read_roll() {
   float gy = GY85.gyro_y( GY85.readGyro() );
 
   delta_angle2 = gy * (interval/1000000);
+  Serial.print("gy = ");
+  Serial.print(gy);
+  
   gyro_roll += delta_angle2;
   
   acce_roll = -(90 - abs((atan2(az, ay) * 180/PI)));
@@ -91,5 +109,5 @@ double read_roll() {
   // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
   filter_roll = (acce_roll + weight * gyro_roll) / (1+ weight);
 
-  return filter_roll;
+  return gyro_roll;
 }
