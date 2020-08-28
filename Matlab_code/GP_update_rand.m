@@ -23,36 +23,21 @@ measurementNoise = [];
 procNoise = 10;
 
 % Set parameters
-%{
-searchrange=[
-	0 2;	% x1-x4    
-    0 2;	% x5-x8
-	0 2;	% a1, a2
-    0 2;	% a3, a4
-    0 2;	% a5, a8
-    0 2 	% a6, a7
-	];
-%}
-%groups = searchrange(:,2) - searchrange(:,1);
-%resolution = prod(groups);
-%explore_exploit = 1;
 mode = 'Matern'; % Matérn kernel function
 
 % Initialization
 % Set start values
 v = {};
 v{1} = [25 50 75 100 125];   % x0 - hopping height
-v{2} = [0.40 0.45 0.50 0.55 0.60];   % x1 - gain kp for controlling pitch (Orange motors)
-v{3} = [0.00 0.05 0.10 0.15 0.20];   % x2 - gain kv for controlling pitch (Orange motors)
-v{4} = [0.40 0.45 0.50 0.55 0.60];   % x3 - gain kp for controlling roll (Yellow motors)
-v{5} = [0.00 0.05 0.10 0.15 0.20];   % x4 - gain kv for controlling roll (Yellow motors)
+v{2} = [40 45 50 55 60];   % x1 - gain kp for controlling pitch (Orange motors)
+v{3} = [00 05 10 15 20];   % x2 - gain kv for controlling pitch (Orange motors)
+v{4} = [40 45 50 55 60];   % x3 - gain kp for controlling roll (Yellow motors)
+v{5} = [00 05 10 15 20];   % x4 - gain kv for controlling roll (Yellow motors)
 
 dimension = length(v); % 10
 choice = length(v{1}); % 4
 resolution = choice.^dimension; % 4.^10 = 1048576
 xtot = combvec(v{:});   % combvec() generating the same order of combinations; 10*1048576 double
-% [~,index] = sort(xtot(1,:));
-% xtot = xtot(:,index);
 
 bestSigma = 1;
 bestScale = 1;
@@ -91,10 +76,11 @@ fclose(fid);
 % Iterate (50 interations)
 for i = 1:50
     % Get input from user (Do experiment and get the result yAdd)
-    str = '%dth iteration:[%0.2f,%0.2f,%0.2f,%0.2f,%0.2f]?';
+    str = '%dth iteration:[%0.2f,%0.2f,%0.2f,%0.2f,%0.2f]? ';
     yAdd = input(sprintf(str,i,x(1,end),x(2,end),x(3,end),x(4,end),x(5,end)));
     y = [y yAdd];
-    sigmaN = input('What is the measurement uncertainty? ');                % what is this???
+    % sigmaN = input('What is the measurement uncertainty? ');
+    sigmaN = 0.1;
     measurementNoise = [measurementNoise sigmaN];
     % Write it in the csv
     fid = fopen(location, 'a');
@@ -134,6 +120,4 @@ for i = 1:50
     xAdd = xtot(:,at);
     x = [x xAdd];
     
-    % Plot updated GP
-%     plotGP(mu,s,xInd,y,PI,at,i,time);
 end
