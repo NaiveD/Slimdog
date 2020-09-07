@@ -1,5 +1,5 @@
 #include "HX711.h"
-
+// https://www.youtube.com/watch?v=cztWFrd-gQA
 HX711 scale(2,3);
 long int values = 0;
 void setup() {
