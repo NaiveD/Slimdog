@@ -212,6 +212,20 @@ void loop() {
       angleY2 = -x3 * (filter_roll - 0) - x4 * (roll_velocity);
       angleO2 = -x1 * (filter_pitch - 0) - x2 * (pitch_velocity);
 
+      Serial.print("Adjust Body Attitude: Yellow motor: ");
+      Serial.print(angleY2);
+      Serial.print(", Orange motor: ");
+      Serial.print(angleO2);
+
+      if (angleY2 > 20)
+        angleY2 = 20;
+      if (angleY2 < -20)
+        angleY2 = -20;
+      if (angleO2 > 20)
+        angleO2 = 20;
+      if (angleO2 < -20)
+        angleO2 = -20;
+
       // Rotate Yellow motors
       pwm.setPWM(5, 0, angletoPWM(angle5-angleY2, 5)); // RB
       pwm.setPWM(9, 0, angletoPWM(angle9+angleY2, 9)); // LF;
@@ -271,7 +285,21 @@ void loop() {
 
       angleY1 = - (-x3 * (filter_roll - 0) - x4 * (roll_velocity) );
       angleO1 = - (-x1 * (filter_pitch - 0) - x2 * (pitch_velocity) );
+
+      Serial.print("Adjust Body Attitude: Yellow motor: ");
+      Serial.print(angleY1);
+      Serial.print(", Orange motor: ");
+      Serial.print(angleO1);
       
+      if (angleY1 > 20)
+        angleY1 = 20;
+      if (angleY1 < -20)
+        angleY1 = -20;
+      if (angleO1 > 20)
+        angleO1 = 20;
+      if (angleO1 < -20)
+        angleO1 = -20;
+
       // Rotate Yellow motors
       pwm.setPWM(1, 0, angletoPWM(angle1+angleY1, 1)); // RF
       pwm.setPWM(13, 0, angletoPWM(angle13-angleY1, 13)); // LB
