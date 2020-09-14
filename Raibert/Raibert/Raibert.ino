@@ -83,11 +83,11 @@ int angletoPWM(int ang);
 // ==========================================================
 
 /* ===================== Parameters ======================= */
-int x0 = 100; // x0: the lifted height of the legs 
-int x1 = 0.55;  // x1: gain kp for controlling pitch (Orange motors)
-int x2 = 0.00;  // x2: gain kv for controlling pitch (Orange motors)
-int x3 = 0.45;  // x3: gain kp for controlling roll (Yellow motors)
-int x4 = 0.15;  // x4: gain kv for controlling roll (Yellow motors)
+float x0 = 60; // x0: the lifted height of the legs 
+float x1 = 0;  // x1: gain kp for controlling pitch (Orange motors)
+float x2 = 0;  // x2: gain kv for controlling pitch (Orange motors)
+float x3 = 0;  // x3: gain kp for controlling roll (Yellow motors)
+float x4 = 0;  // x4: gain kv for controlling roll (Yellow motors)
 // int x5 = 0; // x5: The forward distance of the legs during flight phase
 
 int height = x0;  
@@ -284,13 +284,13 @@ void loop() {
     counter += 1;
     objective_function = 100 - 4 * (0.5 * sum_roll/counter + 0.5 * sum_pitch/counter);
 
-    Serial.print(", objective_function = ");
+    Serial.print("objective_function = ");
     Serial.println(objective_function);
   }
   }
   else
   {
-    Serial.print(", objective_function = ");
+    Serial.print("objective_function = ");
     Serial.println(objective_function);
     delay(1000000);
   }
@@ -633,7 +633,7 @@ double read_roll() {
   // Read accelerometer
   double ay = GY85.accelerometer_y( GY85.readFromAccelerometer() ); // Acceleration in y direction
   double az = GY85.accelerometer_z( GY85.readFromAccelerometer() ); // Acceleration in z direction
-
+  
   // Read gyroscope (rate of angular change)
   float gy = GY85.gyro_y( GY85.readGyro() );
 
