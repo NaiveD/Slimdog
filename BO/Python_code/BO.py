@@ -11,12 +11,12 @@ def black_box_function():
     purposes think of the internals of this function, i.e.: the process
     which generates its output values, as unknown.
     """
-    fitness = int(input("What is the fitness? "))
+    fitness = float(input("What is the fitness? "))
     return fitness
 
 optimizer = BayesianOptimization(
     f=None,
-    pbounds={'x0': (0, 150), 'x1': (0, 1), 'x2': (0, 1), 'x3': (0, 1), 'x4': (0, 1)},
+    pbounds={'x0': (30, 100), 'x1': (-1, 1), 'x2': (-1, 1), 'x3': (-1, 1), 'x4': (-1, 1)},
     verbose=2,
     random_state=1,
 )
