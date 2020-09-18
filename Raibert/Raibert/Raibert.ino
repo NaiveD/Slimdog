@@ -83,11 +83,11 @@ int angletoPWM(int ang);
 // ==========================================================
 
 /* ===================== Parameters ======================= */
-float x0 = 60; // x0: the lifted height of the legs 
-float x1 = 0;  // x1: gain kp for controlling pitch (Orange motors)
-float x2 = 0;  // x2: gain kv for controlling pitch (Orange motors)
-float x3 = 0;  // x3: gain kp for controlling roll (Yellow motors)
-float x4 = 0;  // x4: gain kv for controlling roll (Yellow motors)
+float x0 = 59.191540329180185; // x0: the lifted height of the legs 
+float x1 = 0.4406489868843162;  // x1: gain kp for controlling pitch (Orange motors)
+float x2 = -0.9997712503653102;  // x2: gain kv for controlling pitch (Orange motors)
+float x3 = -0.39533485473632046;  // x3: gain kp for controlling roll (Yellow motors)
+float x4 = -0.7064882183657739;  // x4: gain kv for controlling roll (Yellow motors)
 // int x5 = 0; // x5: The forward distance of the legs during flight phase
 
 int height = x0;  
