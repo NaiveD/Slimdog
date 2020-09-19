@@ -6,7 +6,7 @@ const int LOADCELL2_DOUT_PIN = 5;
 const int LOADCELL2_SCK_PIN = 6;
 HX711 scale;
 HX711 scale2;
-unsigned int starting_time = 4000;
+unsigned int starting_time = 3000;
 unsigned int sample_start_time;
 const int max_sample_times = 20;
 long sample_count = 0;
@@ -15,13 +15,12 @@ void setup() {
   Serial.begin(57600);
   scale.begin(LOADCELL1_DOUT_PIN, LOADCELL1_SCK_PIN);
   scale2.begin(LOADCELL2_DOUT_PIN, LOADCELL2_SCK_PIN);
-  scale.set_scale(297.082);
-  scale2.set_scale(381795.375);
+  scale.set_scale(462215.845);
+  scale2.set_scale(375795.375); // same item, larger scale, smaller result
   Serial.println("- - - - - Start tare - - - - -");
   scale.tare();
   scale2.tare();
-  Serial.println("- - - - - End tare (activate now) - - - - -");
-  delay(1000);
+  Serial.println("- - - - - End tare (hang now) - - - - -");
   Serial.println("- - - - - Counting down on start phase - - - - -");
   delay(starting_time);
   Serial.println("- - - - - Begin sampling - - - - -");
