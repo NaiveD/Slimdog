@@ -97,11 +97,7 @@ int angleO2; // angle of the Orange motors of LF/RB during stance
 int angleY2; // angle of the Yellow motors of LF/RB during stance
 // int forwardDistance = x5; 
 
-double objective_function = 0;
-double sum_roll = 0;
-double sum_pitch = 0;
-double counter = 0;
-int time_limit = 30000; // Run for 30s
+int time_limit = 150000000; // Run for 20s
 /* ======================================================== */
 
 // Main body
@@ -125,7 +121,7 @@ void setup() {
   xrf = 80, yrf = -40, zrf = -410;
   xrb = -40, yrb = -20, zrb = -400;
   xlf = 80, ylf = 35, zlf = -400;
-  xlb = -50, ylb = 0, zlb = -400;
+  xlb = -50, ylb = 20, zlb = -400;
   
   set_leg(xrf, yrf, zrf, 0); // Right Front
   set_leg(xlf, ylf, zlf, 1); // Left Front
@@ -140,8 +136,8 @@ void setup() {
 // Trotting gait loop
 void loop() {
   long now = millis(); // Get current time
-  if (now <= time_limit)
-  {
+//  if (now <= time_limit)
+//  {
     // Read IMU data
     if (now - last[0] >= intervals[0])
     {
@@ -215,7 +211,7 @@ void loop() {
       Serial.print("Adjust Body Attitude: Yellow motor: ");
       Serial.print(angleY2);
       Serial.print(", Orange motor: ");
-      Serial.print(angleO2);
+      Serial.println(angleO2);
 
       if (angleY2 > 20)
         angleY2 = 20;
@@ -289,7 +285,7 @@ void loop() {
       Serial.print("Adjust Body Attitude: Yellow motor: ");
       Serial.print(angleY1);
       Serial.print(", Orange motor: ");
-      Serial.print(angleO1);
+      Serial.println(angleO1);
       
       if (angleY1 > 20)
         angleY1 = 20;
@@ -306,22 +302,12 @@ void loop() {
       // Rotate Orange motors
       pwm.setPWM(2, 0, angletoPWM(angle2+angleO1, 2)); // RF
       pwm.setPWM(14, 0, angletoPWM(angle14-angleO1, 14)); // LB;
-
-      sum_roll += abs(filter_roll);
-      sum_pitch += abs(filter_pitch);
-      counter += 1;
-      objective_function = 100 - 4 * (0.5 * sum_roll/counter + 0.5 * sum_pitch/counter);
-
-      Serial.print("objective_function = ");
-      Serial.println(objective_function);
     }
-  }
-  else
-  {
-    Serial.print("objective_function = ");
-    Serial.println(objective_function);
-    delay(1000000);
-  }
+//  }
+//  else
+//  {
+//    delay(1000000);
+//  }
 }
 
 

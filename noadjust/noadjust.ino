@@ -83,7 +83,7 @@ int angletoPWM(int ang);
 // ==========================================================
 
 /* ===================== Parameters ======================= */
-float x0 = 59.191540329180185; // x0: the lifted height of the legs 
+float x0 = 80; // x0: the lifted height of the legs 
 float x1 = 0.4406489868843162;  // x1: gain kp for controlling pitch (Orange motors)
 float x2 = -0.9997712503653102;  // x2: gain kv for controlling pitch (Orange motors)
 float x3 = -0.39533485473632046;  // x3: gain kp for controlling roll (Yellow motors)
@@ -134,11 +134,146 @@ void setup() {
   move_motor();
 
   delay(5000);
-  Serial.println("Finish setting initial position...");
+  Serial.println("Begin testing...");
 }
 
 // Trotting gait loop
 void loop() {
+  long now = millis(); // Get current time
+  if (now <= time_limit)
+  {
+    // Read IMU data
+    if (now - last[0] >= intervals[0])
+    {
+      last[0] = now;
+
+      interval = micros() - timer;
+      timer = micros();
+      
+      // Read roll and pitch from IMU
+      filter_roll = read_roll();
+      filter_pitch = read_pitch();
+      // Serial.print("pitch = ");
+      // Serial.print(filter_pitch);
+      // Serial.print(", roll = ");
+      // Serial.println(filter_roll);
+    }
+
+    // Trotting Phase 1
+    // Phase 1 (180 ms)
+    // RF/LB during flight, LF/RB during stance
+    // LF/RB should lower, RF/LB should lift
+    // LF/RB should rotate the Orange and Yellow motors to adjust the body attitude
+    if (now - last[1] >= intervals[1])
+    {
+  //    Serial.print("In phase1: now = ");
+  //    Serial.print(now);
+  //    Serial.print(", last[1] = ");
+  //    Serial.print(last[1]);
+  //    Serial.print(", now - last[1] = ");
+  //    Serial.println(now - last[1]);
+      
+      last[1] = now;
+
+      // Lower LF/RB
+      set_leg(xlf, ylf, zlf, 1); // Left Front
+      set_leg(xrb, yrb, zrb, 3); // Right Back
+      // Orange Motors
+      pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+      pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+      // Green Motors
+      pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+      pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF  
+
+      // Lift RF/LB
+      set_leg(xrf, yrf, zrf + height, 0); // Right Front
+      set_leg(xlb, ylb, zlb + height, 2); // Left Back
+      // Orange Motors
+      pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+      pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+      // Green Motors
+      pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+      pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+      // Yellow Motors
+      pwm.setPWM(1, 0, angletoPWM(angle1, 1)); // RF
+      pwm.setPWM(13, 0, angletoPWM(angle13, 13)); // LB
+
+      // Adjust body attitude with LF/RB 
+      // Need to use IMU data here
+      Serial.print("In phase1: ");
+      Serial.print("pitch = ");
+      Serial.print(filter_pitch);
+      Serial.print(", roll = ");
+      Serial.println(filter_roll);
+
+      // Rotate Yellow motors
+      pwm.setPWM(5, 0, angletoPWM(angle5, 5)); // RB
+      pwm.setPWM(9, 0, angletoPWM(angle9, 9)); // LF;
+      // Rotate Orange motors
+      pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+      pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF;
+    }
+
+    // Trotting Phase 2
+    // Phase 2 (180 ms)
+    // RF/LB during stance, LF/RB during flight
+    // RF/LB should lower, LF/RB should lift
+    // RF/LB should rotate the Orange and Yellow motors to adjust the body attitude   
+    if (now - last[2] >= intervals[2])
+    {
+  //    Serial.print("In phase2: now = ");
+  //    Serial.print(now);
+  //    Serial.print(", last[2] = ");
+  //    Serial.print(last[2]);
+  //    Serial.print(", now - last[2] = ");
+  //    Serial.println(now - last[2]);
+      last[2] = now; 
+
+      // Lower RF/LB
+      set_leg(xrf, yrf, zrf, 0); // Right Front
+      set_leg(xlb, ylb, zlb, 2); // Left Back
+      // Orange Motors
+      pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+      pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB
+      // Green Motors
+      pwm.setPWM(0, 0, angletoPWM(angle0, 0)); // RF
+      pwm.setPWM(12, 0, angletoPWM(angle12, 12)); // LB
+
+      // Lift LF/RB
+      set_leg(xlf, ylf, zlf + height, 1); // Left Front
+      set_leg(xrb, yrb, zrb + height, 3); // Right Back
+      // Orange Motors
+      pwm.setPWM(6, 0, angletoPWM(angle6, 6)); // RB
+      pwm.setPWM(10, 0, angletoPWM(angle10, 10)); // LF
+      // Green Motors
+      pwm.setPWM(4, 0, angletoPWM(angle4, 4)); // RB
+      pwm.setPWM(8, 0, angletoPWM(angle8, 8)); // LF
+      // Yellow Motors
+      pwm.setPWM(5, 0, angletoPWM(angle5, 5)); // RB
+      pwm.setPWM(9, 0, angletoPWM(angle9, 9)); // LF
+
+      // Adjust body attitude with LF/RB 
+      // Need to use IMU data here
+      Serial.print("In phase2: ");
+      Serial.print("pitch = ");
+      Serial.print(filter_pitch);
+      Serial.print(", roll = ");
+      Serial.println(filter_roll);
+
+      // Rotate Yellow motors
+      pwm.setPWM(1, 0, angletoPWM(angle1, 1)); // RF
+      pwm.setPWM(13, 0, angletoPWM(angle13, 13)); // LB
+      // Rotate Orange motors
+      pwm.setPWM(2, 0, angletoPWM(angle2, 2)); // RF
+      pwm.setPWM(14, 0, angletoPWM(angle14, 14)); // LB;
+    }
+  }
+  else
+  {
+    Serial.print("objective_function = ");
+    Serial.println(objective_function);
+    delay(1000000);
+  }
 }
 
 
