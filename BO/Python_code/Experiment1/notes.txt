@@ -1,0 +1,6 @@
+Run for 3s first, then start measuring the force of the strain gauge (sampling for 15 times in total, each sample is the average of 5, approx. 15s).
+Height of the higgest part of the robot to the ground: 42.5 cm.
+Height of the ledder to the ground: 87.5 cm.
+
+Best target and parameters: 
+{'target': 55.48, 'params': {'x0': 33.013709814998975, 'x1': -0.8882398459838348, 'x2': 0.4036498429562305, 'x3': -0.04944381263450737, 'x4': 0.20933348999914014}}

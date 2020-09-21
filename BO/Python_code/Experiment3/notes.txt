@@ -1,0 +1,8 @@
+1. Body adjustment angles divided by 2.
+2. Initial position of 4 legs set to the same. 
+
+Height of the higgest part of the robot to the ground: 36 cm.
+Height of the ledder to the ground: 87.5 cm.
+
+x0 (hopping height) might be too small, even with a value of 60, the robot is like standing not trotting.
+Maybe change the range of x0 from (30, 100) to (60, 120) next experiment.

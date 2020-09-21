@@ -1,0 +1,10 @@
+1. Body adjustment angles divided by 2.
+2. Initial position of 4 legs set to the same. 
+
+Height of the higgest part of the robot to the ground: 36 cm.
+Height of the ledder to the ground: 87.5 cm.
+
+The range of x0 changed to (60, 120).
+
+Best target and parameters: 
+{'target': 55.16, 'params': {'x0': 88.0622083192263, 'x1': 0.11140553475704373, 'x2': 0.38880362682748015, 'x3': -0.7135549175083746, 'x4': -0.029685690010696097}}

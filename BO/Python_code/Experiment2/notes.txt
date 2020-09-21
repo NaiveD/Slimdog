@@ -1,0 +1,7 @@
+Modifications based on Experiment 1:
+1. Body adjustment angles divided by 5. (The adjustment is too small, the fitness results do not change much, alaways around 40, so only did 10 iterations)
+2. Initial position of 4 legs set to the same. 
+
+Height of the higgest part of the robot to the ground: 42.5 cm.
+Height of the ledder to the ground: 87.5 cm.
+

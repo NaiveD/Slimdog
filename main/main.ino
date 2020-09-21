@@ -17,7 +17,7 @@ long last[] = {0, 5500, 5700}; // Previous time
 double interval; // time interval
 double timer = 0; // Previous time
 
-int weight = 20; // weight of complementary filter
+int weight = 10; // weight of complementary filter
 double gyro_roll = 0; // Roll angle calculated by gyroscope
 double acce_roll = 0; // Roll angle calculated by accelerometer
 double filter_roll = 0; // Roll angle after filtering
@@ -83,18 +83,18 @@ int angletoPWM(int ang);
 // ==========================================================
 
 /* ===================== Parameters ======================= */
-float x0 = 59.191540329180185; // x0: the lifted height of the legs 
-float x1 = 0.4406489868843162;  // x1: gain kp for controlling pitch (Orange motors)
-float x2 = -0.9997712503653102;  // x2: gain kv for controlling pitch (Orange motors)
-float x3 = -0.39533485473632046;  // x3: gain kp for controlling roll (Yellow motors)
-float x4 = -0.7064882183657739;  // x4: gain kv for controlling roll (Yellow motors)
+float x0 = 96.23265640039061; // x0: the lifted height of the legs 
+float x1 =  0.268791433587362;  // x1: gain kp for controlling pitch (Orange motors)
+float x2 =  0.7366007758347914;  // x2: gain kv for controlling pitch (Orange motors)
+float x3 =  0.09653112815227471;  // x3: gain kp for controlling roll (Yellow motors)
+float x4 = 0.0884907177101939;  // x4: gain kv for controlling roll (Yellow motors)
 // int x5 = 0; // x5: The forward distance of the legs during flight phase
 
-int height = x0;  
-int angleO1; // angle of the Orange motors of RF/LB during stance
-int angleY1; // angle of the Yellow motors of RF/LB during stance
-int angleO2; // angle of the Orange motors of LF/RB during stance
-int angleY2; // angle of the Yellow motors of LF/RB during stance
+float height = x0;  
+float angleO1; // angle of the Orange motors of RF/LB during stance
+float angleY1; // angle of the Yellow motors of RF/LB during stance
+float angleO2; // angle of the Orange motors of LF/RB during stance
+float angleY2; // angle of the Yellow motors of LF/RB during stance
 // int forwardDistance = x5; 
 
 int time_limit = 150000000; // Run for 20s
@@ -118,10 +118,10 @@ void setup() {
   // Set initial position
   Serial.println("Begin setting initial position...");
   // x = 0, y = 0, z = -420;
-  xrf = 80, yrf = -40, zrf = -410;
-  xrb = -40, yrb = -20, zrb = -400;
-  xlf = 80, ylf = 35, zlf = -400;
-  xlb = -50, ylb = 20, zlb = -400;
+  xrf = 0, yrf = 0, zrf = -400;
+  xrb = 0, yrb = 0, zrb = -400;
+  xlf = 0, ylf = 0, zlf = -400;
+  xlb = 0, ylb = 0, zlb = -400;
   
   set_leg(xrf, yrf, zrf, 0); // Right Front
   set_leg(xlf, ylf, zlf, 1); // Left Front
@@ -129,7 +129,6 @@ void setup() {
   set_leg(xrb, yrb, zrb, 3); // Right Back  
   move_motor();
 
-  delay(5000);
   Serial.println("Begin testing...");
 }
 
@@ -208,11 +207,6 @@ void loop() {
       angleY2 = -x3 * (filter_roll - 0) - x4 * (roll_velocity);
       angleO2 = -x1 * (filter_pitch - 0) - x2 * (pitch_velocity);
 
-      Serial.print("Adjust Body Attitude: Yellow motor: ");
-      Serial.print(angleY2);
-      Serial.print(", Orange motor: ");
-      Serial.println(angleO2);
-
       if (angleY2 > 20)
         angleY2 = 20;
       if (angleY2 < -20)
@@ -221,13 +215,18 @@ void loop() {
         angleO2 = 20;
       if (angleO2 < -20)
         angleO2 = -20;
+        
+      Serial.print("Adjust Body Attitude: Yellow motor: ");
+      Serial.print(angleY2/2);
+      Serial.print(", Orange motor: ");
+      Serial.println(angleO2/2);  
 
       // Rotate Yellow motors
-      pwm.setPWM(5, 0, angletoPWM(angle5-angleY2, 5)); // RB
-      pwm.setPWM(9, 0, angletoPWM(angle9+angleY2, 9)); // LF;
+      pwm.setPWM(5, 0, angletoPWM(angle5-angleY2/2, 5)); // RB
+      pwm.setPWM(9, 0, angletoPWM(angle9+angleY2/2, 9)); // LF;
       // Rotate Orange motors
-      pwm.setPWM(6, 0, angletoPWM(angle6+angleO2, 6)); // RB
-      pwm.setPWM(10, 0, angletoPWM(angle10-angleO2, 10)); // LF;
+      pwm.setPWM(6, 0, angletoPWM(angle6+angleO2/2, 6)); // RB
+      pwm.setPWM(10, 0, angletoPWM(angle10-angleO2/2, 10)); // LF;
     }
 
     // Trotting Phase 2
@@ -281,11 +280,6 @@ void loop() {
 
       angleY1 = - (-x3 * (filter_roll - 0) - x4 * (roll_velocity) );
       angleO1 = - (-x1 * (filter_pitch - 0) - x2 * (pitch_velocity) );
-
-      Serial.print("Adjust Body Attitude: Yellow motor: ");
-      Serial.print(angleY1);
-      Serial.print(", Orange motor: ");
-      Serial.println(angleO1);
       
       if (angleY1 > 20)
         angleY1 = 20;
@@ -296,12 +290,17 @@ void loop() {
       if (angleO1 < -20)
         angleO1 = -20;
 
+      Serial.print("Adjust Body Attitude: Yellow motor: ");
+      Serial.print(angleY1/2);
+      Serial.print(", Orange motor: ");
+      Serial.println(angleO1/2);  
+
       // Rotate Yellow motors
-      pwm.setPWM(1, 0, angletoPWM(angle1+angleY1, 1)); // RF
-      pwm.setPWM(13, 0, angletoPWM(angle13-angleY1, 13)); // LB
+      pwm.setPWM(1, 0, angletoPWM(angle1+angleY1/2, 1)); // RF
+      pwm.setPWM(13, 0, angletoPWM(angle13-angleY1/2, 13)); // LB
       // Rotate Orange motors
-      pwm.setPWM(2, 0, angletoPWM(angle2+angleO1, 2)); // RF
-      pwm.setPWM(14, 0, angletoPWM(angle14-angleO1, 14)); // LB;
+      pwm.setPWM(2, 0, angletoPWM(angle2+angleO1/2, 2)); // RF
+      pwm.setPWM(14, 0, angletoPWM(angle14-angleO1/2, 14)); // LB;
     }
 //  }
 //  else

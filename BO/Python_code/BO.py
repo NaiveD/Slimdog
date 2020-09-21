@@ -16,7 +16,7 @@ def black_box_function():
 
 optimizer = BayesianOptimization(
     f=None,
-    pbounds={'x0': (30, 100), 'x1': (-1, 1), 'x2': (-1, 1), 'x3': (-1, 1), 'x4': (-1, 1)},
+    pbounds={'x0': (60, 120), 'x1': (-1, 1), 'x2': (-1, 1), 'x3': (-1, 1), 'x4': (-1, 1)},
     verbose=2,
     random_state=1,
 )
