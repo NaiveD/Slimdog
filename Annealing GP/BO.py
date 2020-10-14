@@ -14,8 +14,9 @@ def black_box_function():
     fitness = float(input("What is the fitness? "))
     return fitness
 
-def function_to_be_optimized():
-    
+
+def function_with_adjusted_params():
+    pass
 
 
 optimizer = BayesianOptimization(
