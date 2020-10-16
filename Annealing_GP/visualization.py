@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 def main():
     # with open('func_test/AGP/AGP.json', 'r') as json_file:
-    with open('func_test/Discrete/Discrete.json', 'r') as json_file:
-    # with open('func_test/Continuous/Continuous.json', 'r') as json_file:
+    # with open('func_test/Discrete/Discrete.json', 'r') as json_file:
+    with open('func_test/Continuous/Continuous.json', 'r') as json_file:
         json_list = []
         for each in json_file.readlines():
             json_data = json.loads(each)
@@ -27,9 +27,9 @@ def main():
         show_max='['+str(max_indx)+' '+str(y[max_indx])+']'
         plt.annotate(show_max,xytext=(max_indx,y[max_indx]),xy=(max_indx,y[max_indx]))
 
-        # plt.title('Fitness of Experiment5 (Continuous)')
-        plt.title('Fitness of Experiment5 (Discrete)')
-        # plt.title('Fitness of Experiment5 (AGP)')
+        plt.title('Fitness of Experiment1 (Continuous)')
+        # plt.title('Fitness of Experiment1 (Discrete)')
+        # lt.title('Fitness of Experiment1 (AGP)')
 
         plt.xlabel('Number of iterations')
         plt.ylabel('Fitness')

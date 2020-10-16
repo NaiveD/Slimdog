@@ -5,7 +5,7 @@ from bayes_opt import UtilityFunction
 from bayes_opt.logger import JSONLogger
 from bayes_opt.event import Events
 
-def black_box_function(x1, x2, x3, x4, x5):
+def black_box_function(x1, x2):
     """Function with unknown internals we wish to maximize.
 
     This is just serving as an example, for all intents and
@@ -14,7 +14,7 @@ def black_box_function(x1, x2, x3, x4, x5):
     """
 
     # E1: Rastrigin's function
-    # return -(20 + x1**2 + x2**2 - 10 * (cos(2*pi*x1) + cos(2*pi*x2)))
+    return -(20 + x1**2 + x2**2 - 10 * (cos(2*pi*x1) + cos(2*pi*x2)))
 
     # E2: Rastrigin's function (shifted)
     # return -(20 + (x1-2)**2 + (x2+2)**2 - 10 * (cos(2*pi*(x1-2)) + cos(2*pi*(x2+2))))
@@ -26,13 +26,14 @@ def black_box_function(x1, x2, x3, x4, x5):
     # return 0.5 - (sin((x1-2)**2-(x2+2)**2)**2-0.5)/(1+0.001*((x1-2)**2+(x2+2)**2))**2
 
     # E5: Ackley function (5-D)
-    result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
-    return -result
+    # result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
+    # return -result
     
 
 optimizer = BayesianOptimization(
     f=None,
-    pbounds={'x1': (-10, 10), 'x2': (-10, 10), 'x3': (-10, 10), 'x4': (-10, 10), 'x5': (-10, 10)},
+    pbounds={'x1': (-10, 10), 'x2': (-10, 10)},
+    # pbounds={'x1': (-10, 10), 'x2': (-10, 10), 'x3': (-10, 10), 'x4': (-10, 10), 'x5': (-10, 10)},
     verbose=2,
     random_state=1,
 )

@@ -6,7 +6,7 @@ from bayes_opt.logger import JSONLogger
 from bayes_opt.event import Events
 import numpy as np
 
-def black_box_function(x1, x2, x3, x4, x5):
+def black_box_function(x1, x2):
     """Function with unknown internals we wish to maximize.
 
     This is just serving as an example, for all intents and
@@ -15,10 +15,10 @@ def black_box_function(x1, x2, x3, x4, x5):
     """
 
     
-    return function_discrete(x1, x2, x3, x4, x5)
+    return function_discrete(x1, x2)
 
 
-def function_discrete(x1, x2, x3, x4, x5):
+def function_discrete(x1, x2):
     # Get the discrete Parameters 
     if (i < 10): # divide the parameter space into 10 discrete values 
         para_space = list(np.arange(-100, 101, 200/10))
@@ -31,8 +31,8 @@ def function_discrete(x1, x2, x3, x4, x5):
     elif (40 <= i < 50): # divide the parameter space into 1000 discrete values 
         para_space = list(np.arange(-100, 101, 200/1000))
     else:
-        result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
-        return -result
+        return -(20 + x1**2 + x2**2 - 10 * (cos(2*pi*x1) + cos(2*pi*x2)))
+        
         
     # Find the closest value of x1 and x2 in the parameter space
     x1 = min(para_space, key=lambda x:abs(x-x1))
@@ -42,7 +42,7 @@ def function_discrete(x1, x2, x3, x4, x5):
     next_point_to_probe['x2'] = x2
 
     # E1: Rastrigin's function (shifted)
-    # return -(20 + x1**2 + x2**2 - 10 * (cos(2*pi*x1) + cos(2*pi*x2)))
+    return -(20 + x1**2 + x2**2 - 10 * (cos(2*pi*x1) + cos(2*pi*x2)))
 
     # E2: Rastrigin's function (shifted)
     # return -(20 + (x1-2)**2 + (x2+2)**2 - 10 * (cos(2*pi*(x1-2)) + cos(2*pi*(x2+2))))
@@ -54,8 +54,8 @@ def function_discrete(x1, x2, x3, x4, x5):
     # return 0.5 - (sin((x1-2)**2-(x2+2)**2)**2-0.5)/(1+0.001*((x1-2)**2+(x2+2)**2))**2
 
     # E5: Ackley function (5-D)
-    result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
-    return -result
+    # result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
+    # return -result
     
     
     
@@ -63,7 +63,8 @@ def function_discrete(x1, x2, x3, x4, x5):
 if __name__ == "__main__":
     optimizer = BayesianOptimization(
         f=None,
-        pbounds={'x1': (-10, 10), 'x2': (-10, 10), 'x3': (-10, 10), 'x4': (-10, 10), 'x5': (-10, 10)},
+        pbounds={'x1': (-10, 10), 'x2': (-10, 10)},
+        # pbounds={'x1': (-10, 10), 'x2': (-10, 10), 'x3': (-10, 10), 'x4': (-10, 10), 'x5': (-10, 10)},
         verbose=2,
         random_state=1,
     )

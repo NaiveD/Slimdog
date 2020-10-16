@@ -1,3 +1,17 @@
 * Rastrigin's function (expected optimum: 0 at (0,0))
 * 60 iterations
 * x1, x2: (-10, 10)
+
+
+
+* Continuous:
+Best target and parameters:
+{'target': -1.0142169530199752, 'params': {'x1': -1.000453173263457, 'x2': -0.008179346525378951}}
+
+* Discrete:
+Best target and parameters:
+{'target': -14.499660112497725, 'params': {'x1': -0.7999999999985903, 'x2': -0.19999999999858176}}
+
+* AGP:
+Best target and parameters: 
+{'target': -0.0, 'params': {'x1': 0.0, 'x2': 0.0}}
