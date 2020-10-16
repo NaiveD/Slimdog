@@ -1,0 +1,3 @@
+* Shifted Rastrigin's function (expected optimum: 0 at (2,-2))
+* 60 iterations
+* x1, x2: (-10, 10)

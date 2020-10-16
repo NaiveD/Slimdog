@@ -1,0 +1,16 @@
+* shifted SCHAFFER FUNCTION (expected optimum: 1 at (2,-2))
+* 60 iterations
+* x1, x2: (-10, 10)
+
+
+* Continuous:
+Best target and parameters:
+{'target': 0.9775372132420638, 'params': {'x1': 5.388924850377406, 'x2': -4.298082267566515}}
+
+* Discrete:
+Best target and parameters:
+{'target': 0.9999200095989771, 'params': {'x1': 1.8000000000014467, 'x2': -2.19999999999861}}
+
+* AGP:
+Best target and parameters: 
+{'target': 0.9920949861426052, 'params': {'x1': 0.0, 'x2': 0.0}}

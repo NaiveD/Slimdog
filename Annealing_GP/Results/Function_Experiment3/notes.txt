@@ -1,0 +1,16 @@
+* SCHAFFER FUNCTION (expected optimum: 1 at (0,0))
+* 60 iterations
+* x1, x2: (-10, 10)
+
+
+* Continuous:
+Best target and parameters: 
+{'target': 0.9881353677333091, 'params': {'x1': -2.4556650014547707, 'x2': -2.4546655262604764}}
+
+* Discrete:
+Best target and parameters: 
+{'target': 0.9767916446578995, 'params': {'x1': 1.400000000001441, 'x2': -3.799999999998633}}
+
+* AGP:
+Best target and parameters: 
+{'target': 0.9636057403058413, 'params': {'x1': -1.7828860481010658, 'x2': 5.879412750845505}}
