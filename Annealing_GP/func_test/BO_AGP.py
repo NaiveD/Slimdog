@@ -21,36 +21,40 @@ def black_box_function(x1, x2, x3, x4, x5):
 
 # def function_discrete(x1, x2):
 def function_discrete(x1, x2, x3, x4, x5):
-    # First 10 iterations as random search in the continuous space
-    if i < 10:
+    # First 20 iterations as random search in the continuous space
+    if i < 20:
+        # E8: Griewank Function (5-D)
+        # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)
         x1 = x1 - 2.4563
         x2 = x2 + 7.4325
         x3 = x3 - 4.4224
         x4 = x4 - 10.6642
         x5 = x5 + 12.2141
 
-        result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
-        return -result    
+        result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
+        return -result 
 
     # Get the discrete Parameters 
-    elif (10 <= i < 25): # divide the parameter space into 10 discrete values 
-        para_space = list(np.arange(-20, 21, 40/10))
-    elif (25 <= i < 40): # divide the parameter space into 100 discrete values 
-        para_space = list(np.arange(-100, 101, 200/100))
-    elif (40 <= i < 55): # divide the parameter space into 1000 discrete values 
-        para_space = list(np.arange(-100, 101, 200/1000))
-    elif (55 <= i < 70): # divide the parameter space into 10000 discrete values 
-        para_space = list(np.arange(-100, 101, 200/10000))
-    elif (70 <= i < 85): # divide the parameter space into 100000 discrete values 
-        para_space = list(np.arange(-100, 101, 200/100000))
-    else: # (85 <= i < 110) just take the continuous value
+    elif (i < 50): # divide the parameter space into 10 discrete values 
+        para_space = list(np.arange(-600, 601, 1200/10))
+    elif (i < 80): # divide the parameter space into 100 discrete values 
+        para_space = list(np.arange(-600, 601, 1200/100))
+    elif (i < 110): # divide the parameter space into 1000 discrete values 
+        para_space = list(np.arange(-600, 601, 1200/1000))
+    elif (i < 140): # divide the parameter space into 10000 discrete values 
+        para_space = list(np.arange(-600, 601, 1200/10000))
+    elif (i < 170): # divide the parameter space into 100000 discrete values 
+        para_space = list(np.arange(-600, 601, 1200/100000))
+    else: # ( 170 <= i < 220) just take the continuous value
+        # E8: Griewank Function (5-D)
+        # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)
         x1 = x1 - 2.4563
         x2 = x2 + 7.4325
         x3 = x3 - 4.4224
         x4 = x4 - 10.6642
         x5 = x5 + 12.2141
 
-        result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
+        result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
         return -result
                 
     # Find the closest value of x1 and x2 in the parameter space
@@ -88,20 +92,33 @@ def function_discrete(x1, x2, x3, x4, x5):
     
     # E7: Shifted Ackley function (5-D) 
     # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)    
+    # x1 = x1 - 2.4563
+    # x2 = x2 + 7.4325
+    # x3 = x3 - 4.4224
+    # x4 = x4 - 10.6642
+    # x5 = x5 + 12.2141
+
+    # result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
+    # return -result
+
+    # E8: Griewank Function (5-D)
+    # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)
     x1 = x1 - 2.4563
     x2 = x2 + 7.4325
     x3 = x3 - 4.4224
     x4 = x4 - 10.6642
     x5 = x5 + 12.2141
 
-    result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
+    result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
     return -result
+
+
 
 if __name__ == "__main__":
     optimizer = BayesianOptimization(
         f=None,
         # pbounds={'x1': (-10, 10), 'x2': (-10, 10)},
-        pbounds={'x1': (-20, 20), 'x2': (-20, 20), 'x3': (-20, 20), 'x4': (-20, 20), 'x5': (-20, 20)},
+        pbounds={'x1': (-600, 600), 'x2': (-600, 600), 'x3': (-600, 600), 'x4': (-600, 600), 'x5': (-600, 600)},
         verbose=2,
         random_state=1,
     )
@@ -113,7 +130,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./AGP/AGP_%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
-    num_iter = 10 + 100; # First 10 iterations as random search in the continuous space
+    num_iter = 20 + 200; # First 20 iterations as random search in the continuous space
 
     # for i in range(num_iter):
     i = 0

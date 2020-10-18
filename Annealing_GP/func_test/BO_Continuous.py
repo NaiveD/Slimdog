@@ -36,13 +36,24 @@ def black_box_function(x1, x2, x3, x4, x5):
 
     # E7: Shifted Ackley function (5-D) 
     # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)    
+    # x1 = x1 - 2.4563
+    # x2 = x2 + 7.4325
+    # x3 = x3 - 4.4224
+    # x4 = x4 - 10.6642
+    # x5 = x5 + 12.2141
+
+    # result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
+    # return -result
+    
+    # E8: Griewank Function (5-D)
+    # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)
     x1 = x1 - 2.4563
     x2 = x2 + 7.4325
     x3 = x3 - 4.4224
     x4 = x4 - 10.6642
     x5 = x5 + 12.2141
 
-    result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
+    result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
     return -result
     
 
@@ -50,7 +61,7 @@ if __name__ == "__main__":
     optimizer = BayesianOptimization(
         f=None,
         # pbounds={'x1': (-10, 10), 'x2': (-10, 10)},
-        pbounds={'x1': (-20, 20), 'x2': (-20, 20), 'x3': (-20, 20), 'x4': (-20, 20), 'x5': (-20, 20)},
+        pbounds={'x1': (-600, 600), 'x2': (-600, 600), 'x3': (-600, 600), 'x4': (-600, 600), 'x5': (-600, 600)},
         verbose=2,
         random_state=1,
     )
@@ -62,7 +73,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./Continuous/Continuous_%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
-    num_iter = 10 + 100; # First 10 iterations as random search in the continuous space
+    num_iter = 20 + 200; # First 20 iterations as random search in the continuous space
     for i in range(num_iter):
         print("%dth iteration: " % i, end='')
 
