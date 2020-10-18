@@ -1,0 +1,54 @@
+* Test function: Ackley function (5-D)
+* Expected optimum: 0 at (0, 0, 0, 0, 0, 0)
+* Parameter space: (-20, 20)^5
+* Number of Iterations: 100
+
+
+
+* Continuous:
+Best target and parameters: 
+{'target': -3.108225855954288, 'params': {'x1': -1.0245076552357117, 'x2': -0.1775375868973884, 'x3': -0.005336558224623311, 'x4': 0.22289016006573675, 'x5': 0.9952720787545324}}
+
+* Discrete:
+* Setup1: para_space = list(np.arange(-20, 21, 40/100000))
+Best target and parameters: 
+{'target': -0.36661430865274625, 'params': {'x1': 0.019999999953341785, 'x2': -0.06680000004645592, 'x3': 0.0019999999533837354, 'x4': 0.015199999953352972, 'x5': 0.09839999995315907}}
+
+* Setup2: para_space = list(np.arange(-20, 21, 40/10000))
+Best target and parameters: 
+{'target': -2.2251319966145324, 'params': {'x1': -0.04799999999333693, 'x2': 0.5920000000068768, 'x3': 0.06400000000670047, 'x4': 0.1440000000067272, 'x5': -0.13599999999336632}}
+
+* Setup3: para_space = list(np.arange(-20, 21, 40/1000))
+Best target and parameters: 
+{'target': -0.716083314106438, 'params': {'x1': 0.07999999999957197, 'x2': -0.12000000000042377, 'x3': 0.03999999999957282, 'x4': 0.03999999999957282, 'x5': -0.12000000000042377}}
+
+* Setup4: para_space = list(np.arange(-20, 21, 40/100))
+Best target and parameters: 
+{'target': -1.528111024663886, 'params': {'x1': -7.105427357601002e-14, 'x2': -7.105427357601002e-14, 'x3': -7.105427357601002e-14, 'x4': 0.3999999999999275, 'x5': -7.105427357601002e-14}}
+
+* Setup5: para_space = list(np.arange(-20, 21, 40/10))
+# Explores fewer parameters, but the optimum parameter in this experiment happens to lie in these values, 
+change the optimum parameters to a new set of values that is harder to find next experiment.
+
+Best target and parameters: 
+{'target': -0.0, 'params': {'x1': 0.0, 'x2': 0.0, 'x3': 0.0, 'x4': 0.0, 'x5': 0.0}}
+
+* AGP:
+* Setup: 
+
+```
+    if (i < 15): # divide the parameter space into 10 discrete values 
+        para_space = list(np.arange(-20, 21, 40/10))
+    elif (15 <= i < 30): # divide the parameter space into 100 discrete values 
+        para_space = list(np.arange(-100, 101, 200/100))
+    elif (30 <= i < 45): # divide the parameter space into 1000 discrete values 
+        para_space = list(np.arange(-100, 101, 200/1000))
+    elif (45 <= i < 60): # divide the parameter space into 10000 discrete values 
+        para_space = list(np.arange(-100, 101, 200/10000))
+    elif (60 <= i < 75): # divide the parameter space into 100000 discrete values 
+        para_space = list(np.arange(-100, 101, 200/100000))
+    else: # (75 <= i < 100) just use continuous value
+```
+
+Best target and parameters: 
+{'target': -1.6225078888651474, 'params': {'x1': -0.18114780179169537, 'x2': 0.3154484611257838, 'x3': 0.06466801189873593, 'x4': 0.013053060511365401, 'x5': 0.07528694749733837}}

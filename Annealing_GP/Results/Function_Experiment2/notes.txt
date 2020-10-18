@@ -6,10 +6,10 @@
 Best target and parameters: 
 {'target': -12.93458902509203, 'params': {'x1': -0.985537480165539, 'x2': -0.009515798135246346}}
 
-* Discrete:
+* Discrete: # WRONG setup !!!
 Best target and parameters: 
 {'target': -19.14983005616245, 'params': {'x1': -0.9999999999985931, 'x2': -0.19999999999858176}}
 
-* AGP:
+* AGP: # WRONG setup !!!
 Best target and parameters: 
 {'target': -4.0, 'params': {'x1': 2.0, 'x2': 0.0}}
