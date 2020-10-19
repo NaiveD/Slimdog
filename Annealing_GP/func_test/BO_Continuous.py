@@ -86,7 +86,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./Continuous/Continuous_%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
-    num_iter = 30 + 300; # First 20 iterations as random search in the continuous space
+    num_iter = 3 + 50; # First 20 iterations as random search in the continuous space
     for i in range(num_iter):
         print("%dth iteration: " % i, end='')
 

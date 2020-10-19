@@ -22,7 +22,7 @@ def black_box_function(x1, x2, x3, x4, x5):
 # def function_discrete(x1, x2):
 def function_discrete(x1, x2, x3, x4, x5):
     # First 10 iterations as random search in the continuous space
-    if i < 30:
+    if i < 3:
         # E9: Modified SCHWEFEL FUNCTION (5-D)
         # Expected optimum: 100 at (420.9687, 420.9687, 420.9687, 420.9687, 420.9687)
 
@@ -37,11 +37,11 @@ def function_discrete(x1, x2, x3, x4, x5):
 
     # Get the discrete Parameters 
     # Divide the parameter space into 10/100/1000/10000/100000 discrete values 
-    para_space = list(np.arange(-500, 501, 1000/10)) # S1
+    # para_space = list(np.arange(-500, 501, 1000/10)) # S1
     # para_space = list(np.arange(-500, 501, 1000/100)) # S2
     # para_space = list(np.arange(-500, 501, 1000/1000)) # S3
     # para_space = list(np.arange(-500, 501, 1000/10000)) # S4
-    # para_space = list(np.arange(-500, 501, 1000/100000)) # S5
+    para_space = list(np.arange(-500, 501, 1000/100000)) # S5
         
     # Find the closest value of x1 and x2 in the parameter space
     x1 = min(para_space, key=lambda x:abs(x-x1))
@@ -127,7 +127,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./Discrete/Discrete_%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
         
-    num_iter = 30 + 300; # First 20 iterations as random search in the continuous space
+    num_iter = 3 + 50; # First 20 iterations as random search in the continuous space
     
     # for i in range(num_iter):
     i = 0

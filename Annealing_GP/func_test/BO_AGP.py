@@ -22,7 +22,7 @@ def black_box_function(x1, x2, x3, x4, x5):
 # def function_AGP(x1, x2):
 def function_AGP(x1, x2, x3, x4, x5):
     # First 20 iterations as random search in the continuous space
-    if i < 30:
+    if i < 3:
         # E9: Modified SCHWEFEL FUNCTION (5-D)
         # Expected optimum: 100 at (420.9687, 420.9687, 420.9687, 420.9687, 420.9687)
 
@@ -120,35 +120,51 @@ def function_AGP(x1, x2, x3, x4, x5):
     return fx
 
 
+def set_sparseness(i, num_iter):
+    interval = (num_iter - 3) / 6
+
+    if (i < 3 + interval):
+        return 10
+    elif (i < 3 + 2*interval):
+        return 100
+    elif (i < 3 + 3*interval):
+        return 1000
+    elif (i < 3 + 4*interval):
+        return 10000
+    elif (i < 3 + 5*interval):
+        return 100000
+    else:
+        return None
+
 # def set_sparseness(i, num_iter):
-#     interval = (num_iter - 30) / 6
-    
-#     if (i < 30 + interval):
+#     interval = (num_iter - 3) / 4
+
+#     if (i < 3):
+#         return None
+#     elif (i < 3 + interval):
 #         return 10
-#     elif (i < 30 + 2*interval):
-#         return 100
-#     elif (i < 30 + 3*interval):
+#     elif (i < 3 + 2*interval):
 #         return 1000
-#     elif (i < 30 + 4*interval):
-#         return 10000
-#     elif (i < 30 + 5*interval):
+#     elif (i < 3 + 3*interval):
 #         return 100000
 #     else:
 #         return None
 
-def set_sparseness(i, num_iter):
-    interval = (num_iter - 30) / 4
+# def set_sparseness(i, num_iter):
+#     interval = (num_iter - 3) / 6
 
-    if (i < 30):
-        return None
-    elif (i < 30 + interval):
-        return 10
-    elif (i < 30 + 2*interval):
-        return 1000
-    elif (i < 30 + 3*interval):
-        return 100000
-    else:
-        return None
+#     if (i < 3 + interval):
+#         return 10
+#     elif (i < 3 + 2*interval):
+#         return 20
+#     elif (i < 3 + 3*interval):
+#         return 40
+#     elif (i < 3 + 4*interval):
+#         return 80
+#     elif (i < 3 + 5*interval):
+#         return 160
+#     else:
+#         return None
 
 if __name__ == "__main__":
     optimizer = BayesianOptimization(
@@ -166,7 +182,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./AGP/AGP_%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
-    num_iter = 30 + 300; # First 20 iterations as random search in the continuous space
+    num_iter = 3 + 50; # First 20 iterations as random search in the continuous space
 
     # for i in range(num_iter):
     i = 0
