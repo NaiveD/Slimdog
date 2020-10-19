@@ -205,3 +205,11 @@ Best target and parameters:
 Best target and parameters: 
 {'target': 95.70065581317404, 'params': {'x1': 88.20000000000027, 'x2': 0.9574000000000015, 'x3': -1.4233, 'x4': 1.4772999999999996, 'x5': -0.1102000000000054}}
 ```
+
+### Thoughts
+
+AGP's advantage: it can explore more in the first few iterations, which means it can have a better prior when doing exploitations afterwards.
+Therefore, I think AGP will be better for a unimodal function with an extremely large parameter space. AGP is not better than continuous/discrete BO in the
+case of a function with many local optima.
+
+Try **Xin-She Yang N. 3 Function:** <http://benchmarkfcns.xyz/benchmarkfcns/xinsheyangn3fcn.html>
