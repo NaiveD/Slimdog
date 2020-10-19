@@ -22,26 +22,26 @@ def black_box_function(x1, x2, x3, x4, x5):
 # def function_discrete(x1, x2):
 def function_discrete(x1, x2, x3, x4, x5):
     # First 10 iterations as random search in the continuous space
-    if i < 20:
-        # E8: Griewank Function (5-D)
-        # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)
-        x1 = x1 - 2.4563
-        x2 = x2 + 7.4325
-        x3 = x3 - 4.4224
-        x4 = x4 - 10.6642
-        x5 = x5 + 12.2141
+    if i < 30:
+        # E9: Modified SCHWEFEL FUNCTION (5-D)
+        # Expected optimum: 100 at (420.9687, 420.9687, 420.9687, 420.9687, 420.9687)
 
-        result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
-        return -result
+        # Dimension 5
+        d = 5 
+        fx = 418.9829 * d - (x1 * sin((abs(x1))**0.5) + x2 * sin((abs(x2))**0.5) + x3 * sin((abs(x3))**0.5) + x4 * sin((abs(x4))**0.5) + x5 * sin((abs(x5)**0.5)))
+        fx = -fx
+
+        # fx = fx * 10 + 100 # Scale and shift 
+        fx = fx + 100
+        return fx
 
     # Get the discrete Parameters 
     # Divide the parameter space into 10/100/1000/10000/100000 discrete values 
-    para_space = list(np.arange(-600, 601, 1200/10)) # S1
-    # para_space = list(np.arange(-600, 601, 1200/100)) # S2
-    # para_space = list(np.arange(-600, 601, 1200/1000)) # S3
-    # para_space = list(np.arange(-600, 601, 1200/10000)) # S4
-    # ara_space = list(np.arange(-600, 601, 1200/100000)) # S5
-
+    para_space = list(np.arange(-500, 501, 1000/10)) # S1
+    # para_space = list(np.arange(-500, 501, 1000/100)) # S2
+    # para_space = list(np.arange(-500, 501, 1000/1000)) # S3
+    # para_space = list(np.arange(-500, 501, 1000/10000)) # S4
+    # para_space = list(np.arange(-500, 501, 1000/100000)) # S5
         
     # Find the closest value of x1 and x2 in the parameter space
     x1 = min(para_space, key=lambda x:abs(x-x1))
@@ -89,21 +89,33 @@ def function_discrete(x1, x2, x3, x4, x5):
 
     # E8: Griewank Function (5-D)
     # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)
-    x1 = x1 - 2.4563
-    x2 = x2 + 7.4325
-    x3 = x3 - 4.4224
-    x4 = x4 - 10.6642
-    x5 = x5 + 12.2141
+    # x1 = x1 - 2.4563
+    # x2 = x2 + 7.4325
+    # x3 = x3 - 4.4224
+    # x4 = x4 - 10.6642
+    # x5 = x5 + 12.2141
 
-    result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
-    return -result
+    # result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
+    # return -result
+
+    # E9: Modified SCHWEFEL FUNCTION (5-D)
+    # Expected optimum: 100 at (420.9687, 420.9687, 420.9687, 420.9687, 420.9687)
+
+    # Dimension 5
+    d = 5 
+    fx = 418.9829 * d - (x1 * sin((abs(x1))**0.5) + x2 * sin((abs(x2))**0.5) + x3 * sin((abs(x3))**0.5) + x4 * sin((abs(x4))**0.5) + x5 * sin((abs(x5)**0.5)))
+    fx = -fx
+
+    # fx = fx * 10 + 100 # Scale and shift 
+    fx = fx + 100
+    return fx
     
 
 if __name__ == "__main__":
     optimizer = BayesianOptimization(
         f=None,
         # pbounds={'x1': (-10, 10), 'x2': (-10, 10)},
-        pbounds={'x1': (-600, 600), 'x2': (-600, 600), 'x3': (-600, 600), 'x4': (-600, 600), 'x5': (-600, 600)},
+        pbounds={'x1': (-500, 500), 'x2': (-500, 500), 'x3': (-500, 500), 'x4': (-500, 500), 'x5': (-500, 500)},
         verbose=2,
         random_state=1,
     )
@@ -115,7 +127,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./Discrete/Discrete_%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
         
-    num_iter = 20 + 200; # First 20 iterations as random search in the continuous space
+    num_iter = 30 + 300; # First 20 iterations as random search in the continuous space
     
     # for i in range(num_iter):
     i = 0

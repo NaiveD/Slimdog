@@ -47,21 +47,34 @@ def black_box_function(x1, x2, x3, x4, x5):
     
     # E8: Griewank Function (5-D)
     # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)
-    x1 = x1 - 2.4563
-    x2 = x2 + 7.4325
-    x3 = x3 - 4.4224
-    x4 = x4 - 10.6642
-    x5 = x5 + 12.2141
+    # x1 = x1 - 2.4563
+    # x2 = x2 + 7.4325
+    # x3 = x3 - 4.4224
+    # x4 = x4 - 10.6642
+    # x5 = x5 + 12.2141
 
-    result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
-    return -result
+    # result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
+    # return -result
+
+    # E9: Modified SCHWEFEL FUNCTION (5-D)
+    # Expected optimum: 100 at (420.9687, 420.9687, 420.9687, 420.9687, 420.9687)
+
+    # Dimension 5
+    d = 5 
+    fx = 418.9829 * d - (x1 * sin((abs(x1))**0.5) + x2 * sin((abs(x2))**0.5) + x3 * sin((abs(x3))**0.5) + x4 * sin((abs(x4))**0.5) + x5 * sin((abs(x5)**0.5)))
+    fx = -fx
+
+    # fx = fx * 10 + 100 # Scale and shift 
+    fx = fx + 100
+    return fx
+
     
 
 if __name__ == "__main__":
     optimizer = BayesianOptimization(
         f=None,
         # pbounds={'x1': (-10, 10), 'x2': (-10, 10)},
-        pbounds={'x1': (-600, 600), 'x2': (-600, 600), 'x3': (-600, 600), 'x4': (-600, 600), 'x5': (-600, 600)},
+        pbounds={'x1': (-500, 500), 'x2': (-500, 500), 'x3': (-500, 500), 'x4': (-500, 500), 'x5': (-500, 500)},
         verbose=2,
         random_state=1,
     )
@@ -73,7 +86,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./Continuous/Continuous_%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
-    num_iter = 20 + 200; # First 20 iterations as random search in the continuous space
+    num_iter = 30 + 300; # First 20 iterations as random search in the continuous space
     for i in range(num_iter):
         print("%dth iteration: " % i, end='')
 
