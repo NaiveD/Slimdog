@@ -2,7 +2,8 @@
 * 60 iterations
 * x1, x2: (-10, 10)
 
-
+# E1: Rastrigin's function (shifted)
+# return -(20 + x1**2 + x2**2 - 10 * (cos(2*pi*x1) + cos(2*pi*x2)))
 
 * Continuous:
 Best target and parameters:

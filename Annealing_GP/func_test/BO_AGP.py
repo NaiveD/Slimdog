@@ -8,56 +8,35 @@ import numpy as np
 
 # def black_box_function(x1, x2):
 def black_box_function(x1, x2, x3, x4, x5):
-    """Function with unknown internals we wish to maximize.
-
-    This is just serving as an example, for all intents and
-    purposes think of the internals of this function, i.e.: the process
-    which generates its output values, as unknown.
-    """
-
     # return function_discrete(x1, x2)
     return function_AGP(x1, x2, x3, x4, x5)
 
 
 # def function_AGP(x1, x2):
 def function_AGP(x1, x2, x3, x4, x5):
-    # First 20 iterations as random search in the continuous space
+    # First 3 iterations as random search in the continuous space
     if i < 3:
-        # E9: Modified SCHWEFEL FUNCTION (5-D)
-        # Expected optimum: 100 at (420.9687, 420.9687, 420.9687, 420.9687, 420.9687)
-
-        # Dimension 5
-        d = 5 
-        fx = 418.9829 * d - (x1 * sin((abs(x1))**0.5) + x2 * sin((abs(x2))**0.5) + x3 * sin((abs(x3))**0.5) + x4 * sin((abs(x4))**0.5) + x5 * sin((abs(x5)**0.5)))
-        fx = -fx
-
-        # fx = fx * 10 + 100 # Scale and shift 
-        fx = fx + 100
-        return fx
+        # E11
+        return E11_func(x1, x2, x3, x4, x5)
 
     interval = set_sparseness(i, num_iter)
     if (interval != None):
-        para_space = list(np.arange(-500, 501, 1000/set_sparseness(i, num_iter)))
+        para_space1 = get_para_space(-2+1+88, 2+1+88, interval)
+        para_space2 = get_para_space(-2+1+0.1324, 2+1+0.1324, interval)
+        para_space3 = get_para_space(-2+1-0.4233, 2+1-0.4233, interval)
+        para_space4 = get_para_space(-2+1+0.8023, 2+1+0.8023, interval)
+        para_space5 = get_para_space(-2+1-0.6352, 2+1-0.6352, interval)
 
-    else: # ( 280 <= i < 330) just take the continuous value
-        # E9: Modified SCHWEFEL FUNCTION (5-D)
-        # Expected optimum: 100 at (420.9687, 420.9687, 420.9687, 420.9687, 420.9687)
-
-        # Dimension 5
-        d = 5 
-        fx = 418.9829 * d - (x1 * sin((abs(x1))**0.5) + x2 * sin((abs(x2))**0.5) + x3 * sin((abs(x3))**0.5) + x4 * sin((abs(x4))**0.5) + x5 * sin((abs(x5)**0.5)))
-        fx = -fx
-
-        # fx = fx * 10 + 100 # Scale and shift 
-        fx = fx + 100
-        return fx
+    else: # Last few iterations: continuous
+        # E11
+        return E11_func(x1, x2, x3, x4, x5)
                 
     # Find the closest value of x1 and x2 in the parameter space
-    x1 = min(para_space, key=lambda x:abs(x-x1))
-    x2 = min(para_space, key=lambda x:abs(x-x2))
-    x3 = min(para_space, key=lambda x:abs(x-x3))
-    x4 = min(para_space, key=lambda x:abs(x-x4))
-    x5 = min(para_space, key=lambda x:abs(x-x5))
+    x1 = min(para_space1, key=lambda x:abs(x-x1))
+    x2 = min(para_space2, key=lambda x:abs(x-x2))
+    x3 = min(para_space3, key=lambda x:abs(x-x3))
+    x4 = min(para_space4, key=lambda x:abs(x-x4))
+    x5 = min(para_space5, key=lambda x:abs(x-x5))
 
     next_point_to_probe['x1'] = x1
     next_point_to_probe['x2'] = x2
@@ -65,112 +44,61 @@ def function_AGP(x1, x2, x3, x4, x5):
     next_point_to_probe['x4'] = x4
     next_point_to_probe['x5'] = x5
 
-    # E1: Rastrigin's function (shifted)
-    # return -(20 + x1**2 + x2**2 - 10 * (cos(2*pi*x1) + cos(2*pi*x2)))
+    # E11
+    return E11_func(x1, x2, x3, x4, x5)
 
-    # E2: Rastrigin's function (shifted)
-    # return -(20 + (x1-2)**2 + (x2+2)**2 - 10 * (cos(2*pi*(x1-2)) + cos(2*pi*(x2+2))))
-    
-    # E3: SCHAFFER FUNCTION
-    # return 0.5 + (sin(x1**2-x2**2)**2-0.5)/(1+0.001*(x1**2+x2**2))**2
-
-    # E4: SCHAFFER FUNCTION (shifted)
-    # return 0.5 - (sin((x1-2)**2-(x2+2)**2)**2-0.5)/(1+0.001*((x1-2)**2+(x2+2)**2))**2
-
-    # E5: Ackley function (5-D)
-    # result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
-    # return -result
-    
-    # E6: Ackley function (5-D)
-    # result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
-    # return -result
-    
-    # E7: Shifted Ackley function (5-D) 
-    # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)    
-    # x1 = x1 - 2.4563
-    # x2 = x2 + 7.4325
-    # x3 = x3 - 4.4224
-    # x4 = x4 - 10.6642
-    # x5 = x5 + 12.2141
-
-    # result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
-    # return -result
-
-    # E8: Griewank Function (5-D)
-    # Expected optimum: 0 at (2.4563, -7.4325, 4.4224, 10.6642, -12.2141)
-    # x1 = x1 - 2.4563
-    # x2 = x2 + 7.4325
-    # x3 = x3 - 4.4224
-    # x4 = x4 - 10.6642
-    # x5 = x5 + 12.2141
-
-    # result = (x1**2/4000 + x2**2/4000 + x3**2/4000 + x4**2/4000 + x5**2/4000) - cos(x1/1**0.5) * cos(x2/2**0.5) * cos(x3/3**0.5) * cos(x4/4**0.5) * cos(x5/5**0.5) + 1
-    # return -result
-
-    # E9: Modified SCHWEFEL FUNCTION (5-D)
-    # Expected optimum: 100 at (420.9687, 420.9687, 420.9687, 420.9687, 420.9687)
-
-    # Dimension 5
-    d = 5 
-    fx = 418.9829 * d - (x1 * sin((abs(x1))**0.5) + x2 * sin((abs(x2))**0.5) + x3 * sin((abs(x3))**0.5) + x4 * sin((abs(x4))**0.5) + x5 * sin((abs(x5)**0.5)))
-    fx = -fx
-
-    # fx = fx * 10 + 100 # Scale and shift 
-    fx = fx + 100
-    return fx
-
-
+# S3
 def set_sparseness(i, num_iter):
     interval = (num_iter - 3) / 6
 
     if (i < 3 + interval):
         return 10
     elif (i < 3 + 2*interval):
-        return 100
+        return 20
     elif (i < 3 + 3*interval):
-        return 1000
+        return 40
     elif (i < 3 + 4*interval):
-        return 10000
+        return 80
     elif (i < 3 + 5*interval):
-        return 100000
+        return 160
     else:
         return None
 
-# def set_sparseness(i, num_iter):
-#     interval = (num_iter - 3) / 4
 
-#     if (i < 3):
-#         return None
-#     elif (i < 3 + interval):
-#         return 10
-#     elif (i < 3 + 2*interval):
-#         return 1000
-#     elif (i < 3 + 3*interval):
-#         return 100000
-#     else:
-#         return None
+def E11_func(x1, x2, x3, x4, x5):
+    # E11: Shifted Happy Cat Function (5-D)
+    # Expected optimum: 100 at `(88, 0.1324, -0.4233, 0.8012, -0.6352)`
 
-# def set_sparseness(i, num_iter):
-#     interval = (num_iter - 3) / 6
+    # Dimension 5
+    d = 5
 
-#     if (i < 3 + interval):
-#         return 10
-#     elif (i < 3 + 2*interval):
-#         return 20
-#     elif (i < 3 + 3*interval):
-#         return 40
-#     elif (i < 3 + 4*interval):
-#         return 80
-#     elif (i < 3 + 5*interval):
-#         return 160
-#     else:
-#         return None
+    # Shift the parameters
+    x1 = x1 - 1 - 88
+    x2 = x2 - 1 - 0.1324
+    x3 = x3 - 1 + 0.4233
+    x4 = x4 - 1 - 0.8012
+    x5 = x5 - 1 + 0.6352
+
+    alpha = 1/8
+
+    xx = x1*x1 + x2*x2 + x3*x3 + x4*x4 + x5*x5
+
+    fx = ((xx-d)**2)**alpha + 1/d * (1/2 * xx + x1 + x2 + x3 + x4 + x5) + 1/2
+    fx = -fx
+    fx = fx * 10 + 100
+
+    return fx
+
+
+def get_para_space(lower, upper, interval):
+    return list(np.arange(lower, upper+1, (upper-lower)/interval))
+
 
 if __name__ == "__main__":
     optimizer = BayesianOptimization(
         f=None,
         # pbounds={'x1': (-10, 10), 'x2': (-10, 10)},
-        pbounds={'x1': (-500, 500), 'x2': (-500, 500), 'x3': (-500, 500), 'x4': (-500, 500), 'x5': (-500, 500)},
+        pbounds={'x1': (-2+1+88, 2+1+88), 'x2': (-2+1+0.1324, 2+1+0.1324), 'x3': (-2+1-0.4233, 2+1-0.4233), 'x4': (-2+1+0.8023, 2+1+0.8023), 'x5': (-2+1-0.6352, 2+1-0.6352)},
         verbose=2,
         random_state=1,
     )
@@ -182,7 +110,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./AGP/AGP_%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
-    num_iter = 3 + 50; # First 20 iterations as random search in the continuous space
+    num_iter = 3 + 300; # First 20 iterations as random search in the continuous space
 
     # for i in range(num_iter):
     i = 0

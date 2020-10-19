@@ -19,10 +19,10 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    with open('func_test/Continuous/Continuous_2020-10-19 19:35:41.json', 'r') as json_file1: # Continuous
+    with open('func_test/Continuous/Continuous_3+300_2020-10-19 21:28:23.json', 'r') as json_file1: # Continuous
     # with open('func_test/AGP/AGP_S2_2020-10-19 14:41:34.json', 'r') as json_file1: # Continuous
-        with open('func_test/Discrete/Discrete_S5_2020-10-19 20:09:42.json', 'r') as json_file2: # Discrete_S5
-            with open('func_test/AGP/AGP_S1_2020-10-19 19:42:44.json', 'r') as json_file3: # AGP
+        with open('func_test/Discrete/Discrete_S5_3+300_2020-10-19 21:44:12.json', 'r') as json_file2: # Discrete_S5
+            with open('func_test/AGP/AGP_S3_3+300_2020-10-19 22:12:02.json', 'r') as json_file3: # AGP
                 # Other Discrete Settings
                 # with open('func_test/Discrete/Discrete_S1_2020-10-19 13:15:58.json', 'r') as json_file4: # Discrete_S1 
                     # with open('func_test/Discrete/Discrete_S2_2020-10-18 19:53:46.json', 'r') as json_file5: # Discrete_S2
@@ -114,7 +114,7 @@ def main():
                                 l1 = plt.plot(x, y1,'bo',label='Continuous', zorder = 10, alpha = 0.6)
                                 plt.plot(x,y1,'bo-')
 
-                                l3 = plt.plot(x, y3,'r+',label='AGP_S1', zorder = 11, alpha = 0.6)
+                                l3 = plt.plot(x, y3,'r+',label='AGP_S3', zorder = 11, alpha = 0.6)
                                 plt.plot(x,y3,'r+-', zorder = 11)
 
                                 # l1 = plt.plot(x, y1,'bo',label='AGP_S2', zorder = 10, alpha = 0.6)
@@ -138,7 +138,7 @@ def main():
                                 plt.scatter(max_indx1+1, y1[max_indx1], 70, marker='x', color = 'black', zorder = 20)
                                 plt.annotate(r'Continuous: ['+str(max_indx1)+', '+str("%.4f"%y1[max_indx1])+']',
                                             xy=(max_indx1+1, y1[max_indx1]), xycoords='data',
-                                            xytext=(-90, +30), textcoords='offset points', fontsize=9,
+                                            xytext=(-50, +35), textcoords='offset points', fontsize=9,
                                             arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
 
                                 # plt.scatter(max_indx1+1, y1[max_indx1], 70, marker='x', color = 'black', zorder = 20)
@@ -150,13 +150,13 @@ def main():
                                 plt.scatter(max_indx2+1, y2[max_indx2], 70, marker='x', color = 'black', zorder = 20)
                                 plt.annotate(r'Discrete_S5: ['+str(max_indx2)+', '+str("%.4f"%y2[max_indx2])+']',
                                             xy=(max_indx2+1, y2[max_indx2]), xycoords='data',
-                                            xytext=(+40, +40), textcoords='offset points', fontsize=9,
+                                            xytext=(+40, +30), textcoords='offset points', fontsize=9,
                                             arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
 
                                 plt.scatter(max_indx3+1, y3[max_indx3], 70, marker='x', color = 'black', zorder = 20)
-                                plt.annotate(r'AGP_S1: ['+str(max_indx3)+', '+str("%.4f"%y3[max_indx3])+']',
+                                plt.annotate(r'AGP_S3: ['+str(max_indx3)+', '+str("%.4f"%y3[max_indx3])+']',
                                             xy=(max_indx3+1, y3[max_indx3]), xycoords='data',
-                                            xytext=(0, +40), textcoords='offset points', fontsize=9,
+                                            xytext=(-140, +10), textcoords='offset points', fontsize=9,
                                             arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
                                 
                                 # plt.scatter(max_indx4+1, y4[max_indx4], 70, marker='x', color = 'black', zorder = 20)
@@ -187,7 +187,7 @@ def main():
                                 # plt.title('Fitness of Experiment1 (Continuous)')
                                 # plt.title('Fitness of Experiment1 (Discrete)')
                                 # plt.title('Fitness of Experiment1 (AGP_S1/AGP_S2)')
-                                plt.title('Fitness of Experiment10 (Continuous/Discrete_5/AGP_S1)')
+                                plt.title('Fitness of Experiment11 (Continuous/Discrete_5/AGP_S3)')
                                 # plt.title('Fitness of Experiment9 (Continuous/Discrete_All/AGP_S1)')
 
 

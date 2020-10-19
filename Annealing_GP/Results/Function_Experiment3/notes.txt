@@ -2,6 +2,8 @@
 * 60 iterations
 * x1, x2: (-10, 10)
 
+# E3: SCHAFFER FUNCTION
+# return 0.5 - (sin(x1**2-x2**2)**2-0.5)/(1+0.001*(x1**2+x2**2))**2
 
 * Continuous:
 Best target and parameters: 

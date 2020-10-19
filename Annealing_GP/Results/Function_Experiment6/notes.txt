@@ -3,7 +3,9 @@
 * Parameter space: (-20, 20)^5
 * Number of Iterations: 100
 
-
+# E6: Ackley function (5-D)
+# result = -20*exp(-0.2*sqrt((1/5)*(x1**2+x2**2+x3**2+x4**2+x5**2)))-exp((1/5)*(cos(2*pi*x1)+cos(2*pi*x2)+cos(2*pi*x3)+cos(2*pi*x4)+cos(2*pi*x5)))+exp(1)+20
+# return -result
 
 * Continuous:
 Best target and parameters: 
