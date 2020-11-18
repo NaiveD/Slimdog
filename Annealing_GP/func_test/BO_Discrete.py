@@ -28,7 +28,7 @@ def black_box_function(x1, x2, x3, x4, x5):
 # def function_discrete(x1, x2):
 def function_discrete(x1, x2, x3, x4, x5):
     # First 3 iterations as random search in the continuous space
-    if i < 3:
+    if i < 4:
         # E12
         return E12_func(x1, x2, x3, x4, x5)
 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     # for i in range(num_iter):
     i = 0
     while i < num_iter:
-        print("%dth iteration: " % i, end='')
+        print("%dth iteration: " % (i+1), end='')
         i += 1
         
         # Get back a suggestion for the next parameter combination the optimizer wants to probe.

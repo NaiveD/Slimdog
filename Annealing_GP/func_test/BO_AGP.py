@@ -28,15 +28,17 @@ def black_box_function(x1, x2, x3, x4, x5):
 # def function_AGP(x1, x2):
 def function_AGP(x1, x2, x3, x4, x5):
     # First 3 iterations as random search in the continuous space
-    if i < 3:
+    if i < 4:
         # E12
+        print("i = %d --- RS iters ---" % i)
         return E12_func(x1, x2, x3, x4, x5)
 
     # Number of AGP iterations before doing continuous BO
-    AGP_iter = 15
+    AGP_iter = 30
 
     interval = set_sparseness(i, AGP_iter)
     if (interval != None):
+        print("--- AGP iters --- i = %d, interval = %d" % (i, interval))
         para_space1 = get_para_space(x1_low, x1_high, interval)
         para_space2 = get_para_space(x2_low, x2_high, interval)
         para_space3 = get_para_space(x3_low, x3_high, interval)
@@ -45,6 +47,7 @@ def function_AGP(x1, x2, x3, x4, x5):
 
     else: # Last few iterations: continuous
         # E12
+        print("i = %d --- Continuous iters ---" % i)
         return E12_func(x1, x2, x3, x4, x5)
                 
     # Find the closest value of x1 and x2 in the parameter space
@@ -64,16 +67,20 @@ def function_AGP(x1, x2, x3, x4, x5):
     return E12_func(x1, x2, x3, x4, x5)
 
 # S1
-def set_sparseness(i, num_iter):
-    interval = 3
-    base = 3  # base. base**2, base**3, base**4...
+def set_sparseness(i, AGP_iter):
+    # The number of different sparseness settings
+    num_sparseness = 2
 
-    iter_interval = (num_iter - 3) / interval
+    # base for setting ths sparseness
+    base = 10
+
+    iter_interval = AGP_iter // num_sparseness
     
-    if (i >= num_iter-interval):
+    if (i > AGP_iter+3): # Do continuous search
         return None
     else:
-        return base**((i-3) // iter_interval)
+        return base**((i-4) // iter_interval + 1)
+        # return base*((i-3) // iter_interval +1)
 
 
 def E11_func(x1, x2, x3, x4, x5):
@@ -147,7 +154,7 @@ if __name__ == "__main__":
     # for i in range(num_iter):
     i = 0
     while i < num_iter:
-        print("%dth iteration: " % i, end='')
+        print("%dth iteration: " % (i+1), end='')
         i += 1
 
         # Get back a suggestion for the next parameter combination the optimizer wants to probe.
