@@ -101,7 +101,7 @@ void setup() {
 
 void loop() {
   // // Trotting
-   int height = 100;
+   int height = 0;
 
    // Lift RF and LB
    set_leg(x-20, y-40, z-20+height, 0); // Right Front

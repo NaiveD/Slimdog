@@ -8,7 +8,7 @@ GY_85 GY85; // create the IMU object
 
 // Handle time
 long intervals[] = {50, 400, 400}; // Time intervals
-long last[] = {0, 5500, 5700}; // Previous time 
+long last[] = {5000, 5500, 5700}; // Previous time 
 
 //long intervals[] = {50, 4000, 4000}; // Time intervals
 //long last[] = {0, 1500, 3500}; // Previous time 
@@ -83,11 +83,11 @@ int angletoPWM(int ang);
 // ==========================================================
 
 /* ===================== Parameters ======================= */
-float x0 = 96.23265640039061; // x0: the lifted height of the legs 
-float x1 =  0.268791433587362;  // x1: gain kp for controlling pitch (Orange motors)
-float x2 =  0.7366007758347914;  // x2: gain kv for controlling pitch (Orange motors)
-float x3 =  0.09653112815227471;  // x3: gain kp for controlling roll (Yellow motors)
-float x4 = 0.0884907177101939;  // x4: gain kv for controlling roll (Yellow motors)
+float x0 = 107.20559802777174; // x0: the lifted height of the legs 
+float x1 = -0.8164244458125829;  // x1: gain kp for controlling pitch (Orange motors)
+float x2 = 0.46582919183059013;  // x2: gain kv for controlling pitch (Orange motors)
+float x3 = -0.276365713363536;  // x3: gain kp for controlling roll (Yellow motors)
+float x4 = 0.31408236331094974;  // x4: gain kv for controlling roll (Yellow motors)
 // int x5 = 0; // x5: The forward distance of the legs during flight phase
 
 float height = x0;  
@@ -215,18 +215,21 @@ void loop() {
         angleO2 = 20;
       if (angleO2 < -20)
         angleO2 = -20;
+
+      angleY2 = angleY2/2;
+      angleO2 = angleO2/2;
         
       Serial.print("Adjust Body Attitude: Yellow motor: ");
-      Serial.print(angleY2/2);
+      Serial.print(angleY2);
       Serial.print(", Orange motor: ");
-      Serial.println(angleO2/2);  
+      Serial.println(angleO2);  
 
       // Rotate Yellow motors
-      pwm.setPWM(5, 0, angletoPWM(angle5-angleY2/2, 5)); // RB
-      pwm.setPWM(9, 0, angletoPWM(angle9+angleY2/2, 9)); // LF;
+      pwm.setPWM(5, 0, angletoPWM(angle5-angleY2, 5)); // RB
+      pwm.setPWM(9, 0, angletoPWM(angle9+angleY2, 9)); // LF;
       // Rotate Orange motors
-      pwm.setPWM(6, 0, angletoPWM(angle6+angleO2/2, 6)); // RB
-      pwm.setPWM(10, 0, angletoPWM(angle10-angleO2/2, 10)); // LF;
+      pwm.setPWM(6, 0, angletoPWM(angle6+angleO2, 6)); // RB
+      pwm.setPWM(10, 0, angletoPWM(angle10-angleO2, 10)); // LF;
     }
 
     // Trotting Phase 2
@@ -290,17 +293,20 @@ void loop() {
       if (angleO1 < -20)
         angleO1 = -20;
 
+      angleY1 = angleY1/2;
+      angleO1 = angleO1/2;
+
       Serial.print("Adjust Body Attitude: Yellow motor: ");
-      Serial.print(angleY1/2);
+      Serial.print(angleY1);
       Serial.print(", Orange motor: ");
-      Serial.println(angleO1/2);  
+      Serial.println(angleO1);  
 
       // Rotate Yellow motors
-      pwm.setPWM(1, 0, angletoPWM(angle1+angleY1/2, 1)); // RF
-      pwm.setPWM(13, 0, angletoPWM(angle13-angleY1/2, 13)); // LB
+      pwm.setPWM(1, 0, angletoPWM(angle1+angleY1, 1)); // RF
+      pwm.setPWM(13, 0, angletoPWM(angle13-angleY1, 13)); // LB
       // Rotate Orange motors
-      pwm.setPWM(2, 0, angletoPWM(angle2+angleO1/2, 2)); // RF
-      pwm.setPWM(14, 0, angletoPWM(angle14-angleO1/2, 14)); // LB;
+      pwm.setPWM(2, 0, angletoPWM(angle2+angleO1, 2)); // RF
+      pwm.setPWM(14, 0, angletoPWM(angle14-angleO1, 14)); // LB;
     }
 //  }
 //  else

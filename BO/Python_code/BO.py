@@ -25,10 +25,10 @@ utility = UtilityFunction(kind="ucb", kappa=2.5, xi=0.0)
 
 def main():
     file_name = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    logger = JSONLogger(path="./%s.json"%file_name)
+    logger = JSONLogger(path="./data/%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
-    num_iter = 50;
+    num_iter = 30;
     for i in range(num_iter):
         print("%dth iteration: " % i, end='')
 
