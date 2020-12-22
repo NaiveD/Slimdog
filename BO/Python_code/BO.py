@@ -11,8 +11,15 @@ def black_box_function():
     purposes think of the internals of this function, i.e.: the process
     which generates its output values, as unknown.
     """
-    fitness = float(input("What is the fitness? "))
+    fitness1 = float(input("What is the fitness? (1st run) "))
+    fitness2 = float(input("What is the fitness? (2nd run) "))
+    fitness3 = float(input("What is the fitness? (3rd run) "))
+
+    fitness = (fitness1 + fitness2 + fitness3)/3;
+
+    print("The average fitness is %f\n" % fitness)
     return fitness
+
 
 optimizer = BayesianOptimization(
     f=None,
@@ -21,16 +28,18 @@ optimizer = BayesianOptimization(
     random_state=1,
 )
 
+
 utility = UtilityFunction(kind="ucb", kappa=2.5, xi=0.0)
 
-def main():
-    file_name = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+if __name__ == "__main__":
+    file_name = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
     logger = JSONLogger(path="./data/%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
     num_iter = 30;
     for i in range(num_iter):
-        print("%dth iteration: " % i, end='')
+        print("%dth iteration: " % i)
 
         # Get back a suggestion for the next parameter combination the optimizer wants to probe.
         next_point_to_probe = optimizer.suggest(utility)
@@ -47,6 +56,3 @@ def main():
     
     print("\nBest target and parameters: ")
     print(optimizer.max)
-
-if __name__ == "__main__":
-	main()
