@@ -83,11 +83,11 @@ int angletoPWM(int ang);
 // ==========================================================
 
 /* ===================== Parameters ======================= */
-float x0 = 107.20559802777174; // x0: the lifted height of the legs 
-float x1 = -0.8164244458125829;  // x1: gain kp for controlling pitch (Orange motors)
-float x2 = 0.46582919183059013;  // x2: gain kv for controlling pitch (Orange motors)
-float x3 = -0.276365713363536;  // x3: gain kp for controlling roll (Yellow motors)
-float x4 = 0.31408236331094974;  // x4: gain kv for controlling roll (Yellow motors)
+float x0 = 62.986133251920585; // x0: the lifted height of the legs 
+float x1 = -0.5024400713675783;  // x1: gain kp for controlling pitch (Orange motors)
+float x2 = -0.054575598121126924;  // x2: gain kv for controlling pitch (Orange motors)
+float x3 = -0.19209075403728396;  // x3: gain kp for controlling roll (Yellow motors)
+float x4 = 0.9761067899528005;  // x4: gain kv for controlling roll (Yellow motors)
 // int x5 = 0; // x5: The forward distance of the legs during flight phase
 
 float height = x0;  
@@ -643,7 +643,7 @@ double read_pitch() {
   acce_pitch = 90 - abs((atan2(az, ax) * 180/PI));        // Angle according to Accelerometer  (added the last element to make sure that it ended in zero degrees)
 
   // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
-  filter_pitch = (acce_pitch + weight * gyro_pitch) / (1 + weight);
+  filter_pitch = (gyro_pitch + weight * acce_pitch) / (1 + weight);
 
   return filter_pitch;
 }
@@ -662,7 +662,7 @@ double read_roll() {
   acce_roll = -(90 - abs((atan2(az, ay) * 180/PI)));
 
   // Complementary filter: combine gyrox (roll angle according to gyro) and roll (roll angle according to accelerometer)
-  filter_roll = (acce_roll + weight * gyro_roll) / (1+ weight);
+  filter_roll = (gyro_roll + weight * acce_roll) / (1+ weight);
 
   return filter_roll;
 }

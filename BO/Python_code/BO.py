@@ -37,7 +37,7 @@ if __name__ == "__main__":
     logger = JSONLogger(path="./data/%s.json"%file_name)
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     
-    num_iter = 30;
+    num_iter = 50;
     for i in range(num_iter):
         print("%dth iteration: " % i)
 
