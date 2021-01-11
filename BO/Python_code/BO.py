@@ -16,6 +16,11 @@ def black_box_function():
     fitness3 = float(input("What is the fitness? (3rd run) "))
 
     fitness = (fitness1 + fitness2 + fitness3)/3;
+    fitness_list = [i, fitness1, fitness2, fitness3, fitness]
+    
+    data_str = str(fitness_list) + "\n"
+
+    all_data_file.write(data_str)
 
     print("The average fitness is %f\n" % fitness)
     return fitness
@@ -34,9 +39,11 @@ utility = UtilityFunction(kind="ucb", kappa=2.5, xi=0.0)
 
 if __name__ == "__main__":
     file_name = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-    logger = JSONLogger(path="./data/%s.json"%file_name)
+    logger = JSONLogger(path="./data/%s_json.json"%file_name)
+
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
-    
+    all_data_file = open("./data/%s_all_data.out"%file_name, "a")
+
     num_iter = 50;
     for i in range(num_iter):
         print("%dth iteration: " % i)
@@ -56,3 +63,5 @@ if __name__ == "__main__":
     
     print("\nBest target and parameters: ")
     print(optimizer.max)
+
+    all_data_file.close()

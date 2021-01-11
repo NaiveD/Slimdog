@@ -83,11 +83,11 @@ int angletoPWM(int ang);
 // ==========================================================
 
 /* ===================== Parameters ======================= */
-float x0 = 62.986133251920585; // x0: the lifted height of the legs 
-float x1 = -0.5024400713675783;  // x1: gain kp for controlling pitch (Orange motors)
-float x2 = -0.054575598121126924;  // x2: gain kv for controlling pitch (Orange motors)
-float x3 = -0.19209075403728396;  // x3: gain kp for controlling roll (Yellow motors)
-float x4 = 0.9761067899528005;  // x4: gain kv for controlling roll (Yellow motors)
+float x0 = 62.89948666951501; // x0: the lifted height of the legs 
+float x1 = -0.5079803293378782;  // x1: gain kp for controlling pitch (Orange motors)
+float x2 = -0.06401874425899491;  // x2: gain kv for controlling pitch (Orange motors)
+float x3 = -0.20972497812303198;  // x3: gain kp for controlling roll (Yellow motors)
+float x4 = 0.9831228831162625;  // x4: gain kv for controlling roll (Yellow motors)
 // int x5 = 0; // x5: The forward distance of the legs during flight phase
 
 float height = x0;  
@@ -97,7 +97,7 @@ float angleO2; // angle of the Orange motors of LF/RB during stance
 float angleY2; // angle of the Yellow motors of LF/RB during stance
 // int forwardDistance = x5; 
 
-int time_limit = 150000000; // Run for 20s
+long time_limit = 30000; // Run for 30s
 /* ======================================================== */
 
 // Main body
@@ -117,7 +117,7 @@ void setup() {
 
   // Set initial position
   Serial.println("Begin setting initial position...");
-  // x = 0, y = 0, z = -420;
+  x = 0, y = 0, z = -420;
   xrf = 0, yrf = 0, zrf = -400;
   xrb = 0, yrb = 0, zrb = -400;
   xlf = 0, ylf = 0, zlf = -400;
@@ -129,14 +129,16 @@ void setup() {
   set_leg(xrb, yrb, zrb, 3); // Right Back  
   move_motor();
 
+  delay(5000);
+
   Serial.println("Begin testing...");
 }
 
 // Trotting gait loop
 void loop() {
   long now = millis(); // Get current time
-//  if (now <= time_limit)
-//  {
+  if (now <= time_limit)
+  {
     // Read IMU data
     if (now - last[0] >= intervals[0])
     {
@@ -308,11 +310,25 @@ void loop() {
       pwm.setPWM(2, 0, angletoPWM(angle2+angleO1, 2)); // RF
       pwm.setPWM(14, 0, angletoPWM(angle14-angleO1, 14)); // LB;
     }
-//  }
-//  else
-//  {
+  }
+  else if (now > time_limit)
+  {
+    Serial.print("now = ");
+    Serial.print(now);
+    Serial.println(", test ends, lift up the legs");
 //    delay(1000000);
-//  }
+    xrf = 0, yrf = 0, zrf = -200;
+    xrb = 0, yrb = 0, zrb = -200;
+    xlf = 0, ylf = 0, zlf = -200;
+    xlb = 0, ylb = 0, zlb = -200;
+    
+    set_leg(xrf, yrf, zrf, 0); // Right Front
+    set_leg(xlf, ylf, zlf, 1); // Left Front
+    set_leg(xlb, ylb, zlb, 2); // Left Back
+    set_leg(xrb, yrb, zrb, 3); // Right Back  
+    move_motor();
+
+  }
 }
 
 
