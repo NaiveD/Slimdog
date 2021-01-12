@@ -10,7 +10,7 @@
 
   * Ladder top to ground $h1 = 112\ cm$
 
-  * Robot top to ground $h2 = 38.5\ cm$
+  * Robot top to ground $h2 = 39\ cm$
 
   * Ladder top to robot top $d = h1 - h2 = 112 - 39 = 73\ cm$
     * Minimum support: constant $d = 73\ cm$ for all 50 iterations
