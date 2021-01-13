@@ -43,7 +43,7 @@ if __name__ == "__main__":
     file_name = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
     logger = JSONLogger(path="./data/%s_json_continue.json"%file_name)
 
-    load_logs(optimizer, logs=["./data/2020-12-23_13:42:25_json.json"]);
+    load_logs(optimizer, logs=["./data/2021-01-11_15:14:24_json.json"]);
 
     optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
     all_data_file = open("./data/%s_all_data_continue.out"%file_name, "a")

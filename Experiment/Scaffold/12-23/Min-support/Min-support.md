@@ -2,7 +2,7 @@
 
 ## Experimental Setup
 
-* Number of iterations: 50
+* Number of iterations: 50 + 10 + 1
 
   * For each iteration (each set of parameters), we perform 3 times, and take the average of the fitness value.
 
@@ -10,10 +10,11 @@
 
   * Ladder top to ground $h1 = 112\ cm$
 
-  * Robot top to ground $h2 = 39\ cm$
-
-  * Ladder top to robot top $d = h1 - h2 = 112 - 39 = 73\ cm$
-    * Minimum support: constant $d = 73\ cm$ for all 50 iterations
+  * Robot top to ground $h2 = (39 \rightarrow 32.5)\ cm$
+    * Minimum support, constant $h2 = 39\ cm$ for iteration 1-50):
+      * For iteration 1-50: $h2 = 39\ cm$
+      * For iteration 51-60: $h2 = 32.5\ cm$ (no supports)
+      * For iteration 61: $h2 = 32.5\ cm$ (no supports), use the best parameters before iteration 51
 
 ![Height Config](Min-support.jpg)
 
@@ -382,5 +383,89 @@ The average fitness is 36.970000
 
 Best target and parameters: 
 {'target': 45.99333333333334, 'params': {'x0': 62.89948666951501, 'x1': -0.5079803293378782, 'x2': -0.06401874425899491, 'x3': -0.20972497812303198, 'x4': 0.9831228831162625}}
+
+New optimizer is now aware of 50 points.
+
+50th iteration: 
+next point to probe is:  {'x0': 64.75880287108701, 'x1': -0.42721859282904173, 'x2': -0.16169011109825648, 'x3': 0.23164888823067664, 'x4': 0.60209305122888}
+What is the fitness? (1st run) 67.12
+What is the fitness? (2nd run) 72.20
+What is the fitness? (3rd run) 66.39
+The average fitness is 68.570000
+
+51th iteration: 
+next point to probe is:  {'x0': 77.99391797172291, 'x1': -0.08307456005155922, 'x2': 0.17227550937265934, 'x3': 0.4861753588049966, 'x4': -0.05160482932681609}
+What is the fitness? (1st run) 72.43
+What is the fitness? (2nd run) 70.66
+What is the fitness? (3rd run) 69.07
+The average fitness is 70.720000
+
+52th iteration: 
+next point to probe is:  {'x0': 64.75388248324865, 'x1': -0.2934778465909471, 'x2': 0.1005556150298823, 'x3': 0.22696498613744787, 'x4': 0.7633096159037487}
+What is the fitness? (1st run) 66.64
+What is the fitness? (2nd run) 64.43
+What is the fitness? (3rd run) 70.27
+The average fitness is 67.113333
+
+53th iteration: 
+next point to probe is:  {'x0': 83.35859794906783, 'x1': 0.8517065492962579, 'x2': 0.6979460871284506, 'x3': 0.17419354537440185, 'x4': -0.5591017773072106}
+What is the fitness? (1st run) 63.80
+What is the fitness? (2nd run) 60.06
+What is the fitness? (3rd run) 60.32
+The average fitness is 61.393333
+
+54th iteration: 
+next point to probe is:  {'x0': 64.85397105174661, 'x1': 0.6999355264582188, 'x2': 0.6025626494953895, 'x3': 0.37580747689057836, 'x4': 0.5120282427405647}
+What is the fitness? (1st run) 66.28
+What is the fitness? (2nd run) 68.40
+What is the fitness? (3rd run) 64.14
+The average fitness is 66.273333
+
+55th iteration: 
+next point to probe is:  {'x0': 74.0515683816593, 'x1': -0.7244593423283759, 'x2': 0.7680283215984829, 'x3': -0.9873301420266817, 'x4': 0.4980417349563193}
+What is the fitness? (1st run) 66.55
+What is the fitness? (2nd run) 68.45
+What is the fitness? (3rd run) 69.19
+The average fitness is 68.063333
+
+56th iteration: 
+next point to probe is:  {'x0': 93.06336200828956, 'x1': -0.5697568956468637, 'x2': 0.9653807516111257, 'x3': -0.14572773198152053, 'x4': 0.6505742250567831}
+What is the fitness? (1st run) 56.60
+What is the fitness? (2nd run) 55.87
+What is the fitness? (3rd run) 54.53
+The average fitness is 55.666667
+
+57th iteration: 
+next point to probe is:  {'x0': 99.7081157448746, 'x1': 0.009845966715403639, 'x2': -0.47584106212273347, 'x3': 0.2456338562807157, 'x4': -0.18476309097368204}
+What is the fitness? (1st run) 60.54
+What is the fitness? (2nd run) 60.13
+What is the fitness? (3rd run) 60.28
+The average fitness is 60.316667
+
+58th iteration: 
+next point to probe is:  {'x0': 68.4739165657199, 'x1': -0.4656577724392841, 'x2': 0.701437536801774, 'x3': -0.10150437331862487, 'x4': 0.42124926407556046}
+What is the fitness? (1st run) 67.69 
+What is the fitness? (2nd run) 69.95
+What is the fitness? (3rd run) 71.73
+The average fitness is 49.456667
+
+59th iteration: 
+next point to probe is:  {'x0': 88.17830065081972, 'x1': -0.9220731006632504, 'x2': -0.7371839193325795, 'x3': 0.41217376549217666, 'x4': -0.0615814940223086}
+What is the fitness? (1st run) 63.32
+What is the fitness? (2nd run) 65.02
+What is the fitness? (3rd run) 65.48
+The average fitness is 64.606667
+
+
+Best target and parameters: 
+{'target': 70.72, 'params': {'x0': 77.99391797172291, 'x1': -0.08307456005155922, 'x2': 0.17227550937265934, 'x3': 0.4861753588049966, 'x4': -0.05160482932681609}}
+
+Using Best Parameters before iteration 50:
+
+1st run: 70.34
+2nd run: 64.16
+3rd run: 63.79
+Average: 66.09666666666666
+[60, 70.34, 64.16, 63.79, 66.09666666666666]
 
 ```

@@ -84,10 +84,10 @@ int angletoPWM(int ang);
 
 /* ===================== Parameters ======================= */
 float x0 = 62.89948666951501; // x0: the lifted height of the legs 
-float x1 = -0.5079803293378782;  // x1: gain kp for controlling pitch (Orange motors)
+float x1 =  -0.5079803293378782;  // x1: gain kp for controlling pitch (Orange motors)
 float x2 = -0.06401874425899491;  // x2: gain kv for controlling pitch (Orange motors)
 float x3 = -0.20972497812303198;  // x3: gain kp for controlling roll (Yellow motors)
-float x4 = 0.9831228831162625;  // x4: gain kv for controlling roll (Yellow motors)
+float x4 =  0.9831228831162625;  // x4: gain kv for controlling roll (Yellow motors)
 // int x5 = 0; // x5: The forward distance of the legs during flight phase
 
 float height = x0;  
@@ -129,7 +129,7 @@ void setup() {
   set_leg(xrb, yrb, zrb, 3); // Right Back  
   move_motor();
 
-  delay(5000);
+  // delay(5000);
 
   Serial.println("Begin testing...");
 }
@@ -317,10 +317,10 @@ void loop() {
     Serial.print(now);
     Serial.println(", test ends, lift up the legs");
 //    delay(1000000);
-    xrf = 0, yrf = 0, zrf = -200;
-    xrb = 0, yrb = 0, zrb = -200;
-    xlf = 0, ylf = 0, zlf = -200;
-    xlb = 0, ylb = 0, zlb = -200;
+    xrf = 0, yrf = 100, zrf = -180;
+    xrb = 0, yrb = 100, zrb = -180;
+    xlf = 0, ylf = -120, zlf = -180;
+    xlb = 0, ylb = -120, zlb = -180;
     
     set_leg(xrf, yrf, zrf, 0); // Right Front
     set_leg(xlf, ylf, zlf, 1); // Left Front
