@@ -99,7 +99,7 @@ if __name__ == "__main__":
     plt.plot(x, y2, 'r^-', zorder = 11)
 
     # No-support (green x)
-    l2 = plt.plot(x_10, y3,'gx',label='No_Support', zorder = 11, alpha = 0.6)
+    l3 = plt.plot(x_10, y3,'gx',label='No_Support', zorder = 11, alpha = 0.6)
     plt.plot(x_10, y3, 'gx-', zorder = 11)
 
 
