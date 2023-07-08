@@ -1,7 +1,7 @@
 # Slimdog Project
 
 ## Publication
-**Keyan Zhai**, Chu'an Li, and Andre Rosendo. "Scaffolded Learning of In-place Trotting Gait for a Quadruped Robot with Bayesian Optimization." 16th International Conference on Intelligent Autonomous Systems ([IAS-16](https://www.ias-16.com/)) [[arXiv](https://arxiv.org/abs/2101.09961)][[Demo](https://keyanzhai.cool/2020/11/19/Slimdog/)]
+**Keyan Zhai**, Chu'an Li, and Andre Rosendo. "Scaffolded Learning of In-place Trotting Gait for a Quadruped Robot with Bayesian Optimization." 16th International Conference on Intelligent Autonomous Systems ([IAS-16](https://www.ias-16.com/)) [[Springer](https://link.springer.com/chapter/10.1007/978-3-030-95892-3_28)][[arXiv](https://arxiv.org/abs/2101.09961)][[Demo](https://keyanzhai.github.io/Publications/Slimdog/)]
 
 
 
